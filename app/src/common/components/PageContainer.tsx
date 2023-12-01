@@ -5,8 +5,11 @@ import {
   BreadcrumbLink,
   Card,
   Flex,
+  HStack,
+  IconButton,
 } from "@chakra-ui/react";
-import { FiChevronRight } from "react-icons/fi";
+import { FaPlus, FaRedo } from "react-icons/fa";
+import { FiArrowLeft, FiChevronRight } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
 
 type PageContainerProps = {
@@ -15,21 +18,69 @@ type PageContainerProps = {
     href: string;
     label: string;
   })[];
+  onCreate?: () => void;
+  onRefresh?: () => void;
+  onBack?: () => void;
 };
 
-const PageContainer: React.FC<PageContainerProps> = ({ crumbs, children }) => {
+const PageContainer: React.FC<PageContainerProps> = ({
+  crumbs,
+  children,
+  onCreate,
+  onRefresh,
+  onBack,
+}) => {
   return (
     <Flex flexDirection="column">
-      <Card variant="solid" p="3" mb="4">
+      <Card
+        variant="solid"
+        p="3"
+        mb="4"
+        as={Flex}
+        direction="row"
+        alignItems="center"
+      >
         <Breadcrumb separator={<FiChevronRight />}>
           {crumbs.map((crumb) => (
             <BreadcrumbItem key={crumb.href} {...crumb}>
-              <BreadcrumbLink href={crumb.href} as={NavLink}>
+              <BreadcrumbLink to={crumb.href} as={NavLink}>
                 {crumb.label}
               </BreadcrumbLink>
             </BreadcrumbItem>
           ))}
         </Breadcrumb>
+        <HStack ml="auto">
+          {onRefresh && (
+            <IconButton
+              aria-label="Refresh"
+              icon={<FaRedo />}
+              variant="ghost"
+              size="sm"
+              rounded="full"
+              onClick={onRefresh}
+            />
+          )}
+          {onCreate && (
+            <IconButton
+              aria-label="Create"
+              icon={<FaPlus />}
+              size="sm"
+              rounded="full"
+              colorScheme="blue"
+              onClick={onCreate}
+            />
+          )}
+          {onBack && (
+            <IconButton
+              aria-label="Back"
+              icon={<FiArrowLeft />}
+              variant="ghost"
+              size="sm"
+              rounded="full"
+              onClick={onBack}
+            />
+          )}
+        </HStack>
       </Card>
       <Card variant="solid">{children}</Card>
     </Flex>

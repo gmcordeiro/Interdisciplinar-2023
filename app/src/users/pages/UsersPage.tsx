@@ -1,17 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
-import { FormScope } from "../../common/types/form";
 import UsersGrid from "../components/UsersGrid";
-import { useUsers } from "../contexts/UsersContext";
 
-const UsersPage = () => {
-  const { scope } = useUsers();
-
-  if ([FormScope.CREATE, FormScope.EDIT].includes(scope)) {
-    return <div>form</div>;
-  }
+const UsersPage: React.FC = () => {
+  const navigate = useNavigate();
 
   return (
-    <PageContainer crumbs={[{ href: "/users", label: "Users" }]}>
+    <PageContainer
+      crumbs={[{ href: "/users", label: "Users", isCurrentPage: true }]}
+      onCreate={() => navigate("/users/create")}
+    >
       <UsersGrid />
     </PageContainer>
   );
