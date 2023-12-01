@@ -9,6 +9,7 @@ import {
   UserCategory,
   UserRole,
 } from "../../auth/types";
+import { UserFormValues } from "../../users/components/UsersForm";
 
 type FakeStorageContextValue = {
   login: (credentials: LoginUserInput) => Promise<LoginUserPayload>;
@@ -16,6 +17,8 @@ type FakeStorageContextValue = {
   me: (token: string) => Promise<LoginUserPayload>;
   getUsers: () => Promise<User[]>;
   removeUser: (id: string) => Promise<void>;
+  createUser: (values: UserFormValues) => Promise<void>;
+  getCategories: () => Promise<UserCategory[]>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -188,6 +191,37 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }, []);
 
+  const getCategories = useCallback(async (): Promise<UserCategory[]> => {
+    const categories = getResourse<UserCategory>("categories");
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return categories;
+  }, []);
+
+  const createUser = useCallback(
+    async (values: UserFormValues): Promise<void> => {
+      const users = getResourse<User>("users");
+
+      const categories = getResourse<UserCategory>("categories");
+
+      const category = categories.find(
+        (category) => category.id === values.category
+      );
+
+      if (!category) {
+        throw new Error("Category not found");
+      }
+
+      const user = { ...values, id: uuid(), category } as User;
+
+      localStorage.setItem("users", JSON.stringify([...users, user]));
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    },
+    []
+  );
+
   const value = useMemo(
     () => ({
       login,
@@ -195,8 +229,10 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       me,
       getUsers,
       removeUser,
+      getCategories,
+      createUser,
     }),
-    [login, register, me, getUsers, removeUser]
+    [login, register, me, getUsers, removeUser, getCategories, createUser]
   );
 
   return (

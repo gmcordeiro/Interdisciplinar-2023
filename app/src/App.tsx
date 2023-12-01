@@ -16,6 +16,7 @@ import MenuLayout from "./common/layouts/MenuLayout";
 import SimpleLayout from "./common/layouts/SimpleLayout";
 import ProjectsPage from "./tasks/pages/ProjectsPage";
 import { UsersProvider } from "./users/contexts/UsersContext";
+import UsersCreatePage from "./users/pages/UsersCreatePage";
 import UsersPage from "./users/pages/UsersPage";
 
 const router = createBrowserRouter([
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
           {
             path: "",
             element: <UsersPage />,
+          },
+          {
+            path: "create",
+            element: <UsersCreatePage />,
           },
         ],
       },
