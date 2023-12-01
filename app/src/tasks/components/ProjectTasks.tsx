@@ -49,7 +49,7 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({
         onClose={() => {
           setScope(FormScope.INDEX);
         }}
-        size={scope === FormScope.CREATE ? "xl" : "2xl"}
+        size={"3xl"}
         isCentered
       >
         <ModalOverlay />
