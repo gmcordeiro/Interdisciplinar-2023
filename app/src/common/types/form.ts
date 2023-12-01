@@ -3,4 +3,5 @@ export enum FormScope {
   CREATE = "create",
   EDIT = "edit",
   DELETE = "delete",
+  VIEW = "view",
 }

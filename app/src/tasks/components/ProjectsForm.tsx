@@ -7,7 +7,7 @@ import { Project } from "../types";
 export type ProjectsFormValues = Project;
 
 type ProjectsFormProps = {
-  scope: FormScope.CREATE | FormScope.EDIT;
+  scope: FormScope.CREATE | FormScope.EDIT | FormScope.VIEW;
   defaultValues?: ProjectsFormValues;
   onSubmit: (values: ProjectsFormValues) => void;
 };
@@ -26,23 +26,25 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
   const label = {
     [FormScope.CREATE]: "Create",
     [FormScope.EDIT]: "Update",
+    [FormScope.VIEW]: "View",
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <Stack spacing={4} p={5}>
-        form
         <Flex mt={5} justifyContent="flex-end">
           <Button mr={3} variant="outline" onClick={() => navigate("/users")}>
             Back
           </Button>
-          <Button
-            type="submit"
-            colorScheme="blue"
-            isLoading={form.formState.isSubmitting}
-          >
-            {label[scope]}
-          </Button>
+          {scope !== FormScope.VIEW && (
+            <Button
+              type="submit"
+              colorScheme="blue"
+              isLoading={form.formState.isSubmitting}
+            >
+              {label[scope]}
+            </Button>
+          )}
         </Flex>
       </Stack>
     </form>

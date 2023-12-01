@@ -1,22 +1,24 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
 import { FormScope } from "../../common/types/form";
 import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
-const ProjectsCreatePage = () => {
+const ProjectsEditPage = () => {
   const navigate = useNavigate();
 
   const toast = useToast();
 
   const queryClient = useQueryClient();
 
-  const { mutateAsync: create } = useMutation({
+  const { id } = useParams();
+
+  const { mutateAsync: update } = useMutation({
     mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
     onSuccess: () => {
       toast({
-        title: "Create successful",
+        title: "Update successful",
         status: "success",
       });
 
@@ -26,7 +28,7 @@ const ProjectsCreatePage = () => {
     },
     onError: () => {
       toast({
-        title: "Create failed",
+        title: "Update failed",
         status: "error",
       });
     },
@@ -36,13 +38,13 @@ const ProjectsCreatePage = () => {
     <PageContainer
       crumbs={[
         { href: "/projects", label: "Projects" },
-        { href: "/projects/create", label: "Create", isCurrentPage: true },
+        { href: `/projects/${id}/edit`, label: "Create", isCurrentPage: true },
       ]}
       onBack={() => navigate("/projects")}
     >
-      <ProjectsForm scope={FormScope.CREATE} onSubmit={create} />
+      <ProjectsForm scope={FormScope.EDIT} onSubmit={update} />
     </PageContainer>
   );
 };
 
-export default ProjectsCreatePage;
+export default ProjectsEditPage;

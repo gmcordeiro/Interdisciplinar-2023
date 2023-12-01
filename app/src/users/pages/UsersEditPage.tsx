@@ -55,7 +55,7 @@ const UsersEditPage = () => {
     <PageContainer
       crumbs={[
         { href: "/users", label: "Users" },
-        { href: "/users/edit", label: "Edit", isCurrentPage: true },
+        { href: `/users/${id}/edit`, label: "Edit", isCurrentPage: true },
       ]}
       onBack={() => navigate("/users")}
     >
