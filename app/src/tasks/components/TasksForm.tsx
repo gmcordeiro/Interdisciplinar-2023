@@ -11,26 +11,25 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { useForm, useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
-import { Project } from "../types";
+import { Task } from "../types";
 
-export type ProjectsFormValues = Project;
+export type TasksFormValues = Task;
 
-type ProjectsFormProps = {
-  scope: FormScope.CREATE | FormScope.EDIT | FormScope.VIEW;
-  defaultValues?: ProjectsFormValues;
-  onSubmit: (values: ProjectsFormValues) => void;
+type TasksFormProps = {
+  scope: FormScope;
+  defaultValues?: TasksFormValues;
+  onSubmit: (values: TasksFormValues) => void;
+  onBack: () => void;
 };
 
-const ProjectsForm: React.FC<ProjectsFormProps> = ({
+const TasksForm: React.FC<TasksFormProps> = ({
   defaultValues,
   scope,
   onSubmit,
+  onBack,
 }) => {
-  const navigate = useNavigate();
-
-  const form = useForm<ProjectsFormValues>({
+  const form = useForm<TasksFormValues>({
     defaultValues,
   });
 
@@ -41,7 +40,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <Stack spacing={4} p={5}>
+      <Stack spacing={4} mb={3}>
         {[FormScope.VIEW, FormScope.EDIT].includes(scope) && (
           <Box>
             <FormLabel htmlFor="done">Status</FormLabel>
@@ -82,39 +81,8 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
               form.formState.errors.description.message}
           </FormErrorMessage>
         </FormControl>
-        <FormControl
-          isInvalid={!!form.formState.errors.goal}
-          isReadOnly={scope === FormScope.VIEW}
-        >
-          <FormLabel htmlFor="goal">Goal</FormLabel>
-          <Textarea
-            id="goal"
-            placeholder="Goal"
-            {...form.register("goal", { required: "Goal is required" })}
-          />
-          <FormErrorMessage>
-            {form.formState.errors.goal && form.formState.errors.goal.message}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl
-          isInvalid={!!form.formState.errors.resources}
-          isReadOnly={scope === FormScope.VIEW}
-        >
-          <FormLabel htmlFor="resources">Resources</FormLabel>
-          <Textarea
-            id="resources"
-            placeholder="Resources"
-            {...form.register("resources", {
-              required: "Resources is required",
-            })}
-          />
-          <FormErrorMessage>
-            {form.formState.errors.resources &&
-              form.formState.errors.resources.message}
-          </FormErrorMessage>
-        </FormControl>
         <Flex mt={5} justifyContent="flex-end" gap={3}>
-          <Button variant="outline" onClick={() => navigate("/users")}>
+          <Button variant="outline" onClick={onBack}>
             Back
           </Button>
           {scope !== FormScope.VIEW && (
@@ -132,4 +100,4 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
   );
 };
 
-export default ProjectsForm;
+export default TasksForm;

@@ -19,7 +19,6 @@ import SimpleLayout from "./common/layouts/SimpleLayout";
 import ProjectsCreatePage from "./tasks/pages/ProjectsCreatePage";
 import ProjectsEditPage from "./tasks/pages/ProjectsEditPage";
 import ProjectsPage from "./tasks/pages/ProjectsPage";
-import ProjectsViewPage from "./tasks/pages/ProjectsViewPage";
 import UsersCreatePage from "./users/pages/UsersCreatePage";
 import UsersEditPage from "./users/pages/UsersEditPage";
 import UsersPage from "./users/pages/UsersPage";
@@ -72,10 +71,6 @@ const router = createBrowserRouter([
           {
             path: ":id/edit",
             element: <ProjectsEditPage />,
-          },
-          {
-            path: ":id",
-            element: <ProjectsViewPage />,
           },
           {
             path: "create",

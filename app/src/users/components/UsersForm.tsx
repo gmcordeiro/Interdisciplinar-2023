@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { UserRoleColor } from "../../auth/contants/roles";
 import { User } from "../../auth/types";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
-import { FormScope } from "../../common/types/form";
+import { FormScope, FormScopeLabel } from "../../common/types/form";
 
 export type UserFormValues = Omit<User, "category"> & {
   category: string;
@@ -46,16 +46,9 @@ const UsersForm: React.FC<UsersFormProps> = ({
     initialData: [],
   });
 
-  console.log(defaultValues);
-
   const form = useForm<UserFormValues>({
     defaultValues,
   });
-
-  const label = {
-    [FormScope.CREATE]: "Create",
-    [FormScope.EDIT]: "Update",
-  };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -147,7 +140,7 @@ const UsersForm: React.FC<UsersFormProps> = ({
             colorScheme="blue"
             isLoading={form.formState.isSubmitting}
           >
-            {label[scope]}
+            {FormScopeLabel[scope]}
           </Button>
         </Flex>
       </Stack>

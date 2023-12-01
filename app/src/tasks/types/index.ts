@@ -6,12 +6,13 @@ export type Task = {
   description: string;
   done: boolean;
   dependsOn?: Task;
+  executions?: TaskExecution[];
 };
 
 export type TaskExecution = {
   id: string;
-  startedAt: Date;
-  finishedAt: Date;
+  startedAt: string;
+  finishedAt: string;
   user: User;
   details: string;
 };

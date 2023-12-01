@@ -4,8 +4,8 @@ import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
-import { FormScope } from "../../common/types/form";
-import ProjectTasksGrid from "../components/ProjectTasksGrid";
+import { FormScope, FormScopeLabel } from "../../common/types/form";
+import ProjectTasksGrid from "../components/ProjectTasks";
 import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
 const ProjectsEditPage = () => {
@@ -50,12 +50,22 @@ const ProjectsEditPage = () => {
     <PageContainer
       crumbs={[
         { href: "/projects", label: "Projects" },
-        { href: `/projects/${id}/edit`, label: "Create", isCurrentPage: true },
+        {
+          href: `/projects/${id}/edit`,
+          label: FormScopeLabel.edit,
+          isCurrentPage: true,
+        },
       ]}
       onBack={() => navigate("/projects")}
     >
       <ProjectTasksGrid tasks={project?.tasks || []} fetching={fetching}>
-        <ProjectsForm scope={FormScope.EDIT} onSubmit={update} />
+        {project && (
+          <ProjectsForm
+            scope={FormScope.EDIT}
+            onSubmit={update}
+            defaultValues={project as ProjectsFormValues}
+          />
+        )}
       </ProjectTasksGrid>
     </PageContainer>
   );

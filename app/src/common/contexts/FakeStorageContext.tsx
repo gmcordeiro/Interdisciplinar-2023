@@ -106,6 +106,18 @@ const InitialState = {
               name: "Tarefa 1",
               description: "Descrição da tarefa 1",
               done: false,
+              executions: [
+                {
+                  id: "1",
+                  details: "Detalhes da execução 1",
+                  startedAt: new Date(),
+                  finishedAt: null,
+                  user: {
+                    id: "2",
+                    name: "Coordinator",
+                  },
+                },
+              ],
             },
             {
               id: "2",
