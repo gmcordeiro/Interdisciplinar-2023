@@ -3,7 +3,9 @@ package com.api.adapters.http
 import com.api.application.user.UserService
 import com.api.application.user.UserQuery
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Component
 
+@Component
 class UserHandler (
     private val userService: UserService
 ) {

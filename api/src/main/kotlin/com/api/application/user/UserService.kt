@@ -3,7 +3,9 @@ package com.api.application.user
 import com.api.application.user.exceptions.UserNotFoundException
 import com.api.domain.user.User
 import com.api.domain.user.UserRepository
+import org.springframework.stereotype.Service
 
+@Service
 class UserService (
     private val userRepository: UserRepository
 ) {
