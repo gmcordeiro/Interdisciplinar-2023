@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Badge,
   Box,
   Flex,
   FlexProps,
@@ -7,7 +8,6 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Text,
@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useContext } from "react";
 import { FiChevronDown, FiMenu } from "react-icons/fi";
+import { UserRoleColor } from "../../auth/contants/roles";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 
 interface MobileProps extends FlexProps {
@@ -23,7 +24,7 @@ interface MobileProps extends FlexProps {
 }
 
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-  const { revoke } = useContext(AuthContext);
+  const { revoke, user } = useContext(AuthContext);
 
   return (
     <Flex
@@ -74,11 +75,14 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2"
+                  minW="60px"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text>
+                  <Text fontSize="sm">{user?.name}</Text>
+                  {user?.category?.role && (
+                    <Badge colorScheme={UserRoleColor[user?.category?.role]}>
+                      {user?.category?.role}
+                    </Badge>
+                  )}
                 </VStack>
                 <Box display={{ base: "none", md: "flex" }}>
                   <FiChevronDown />
@@ -89,10 +93,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
-              <MenuDivider />
               <MenuItem onClick={() => revoke()}>Sign out</MenuItem>
             </MenuList>
           </Menu>
