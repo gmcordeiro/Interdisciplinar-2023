@@ -29,7 +29,7 @@ const UsersGrid: React.FC = () => {
           <Tr>
             <Th>Name</Th>
             <Th>Email</Th>
-            <Th>Catagory</Th>
+            <Th>Category</Th>
             <Th>Role</Th>
             <Th></Th>
           </Tr>
