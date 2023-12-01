@@ -1,32 +1,28 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
-import UsersForm from "../components/UsersForm";
+import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
-const UsersCreatePage = () => {
+const ProjectsCreatePage = () => {
   const navigate = useNavigate();
-
-  const { createUser } = useContext(FakeStorageContext);
-
-  const queryClient = useQueryClient();
 
   const toast = useToast();
 
+  const queryClient = useQueryClient();
+
   const { mutateAsync: create } = useMutation({
-    mutationFn: createUser,
+    mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
     onSuccess: () => {
       toast({
         title: "Create successful",
         status: "success",
       });
 
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
 
-      navigate("/users");
+      navigate("/projects");
     },
     onError: () => {
       toast({
@@ -44,9 +40,9 @@ const UsersCreatePage = () => {
       ]}
       onBack={() => navigate("/users")}
     >
-      <UsersForm scope={FormScope.CREATE} onSubmit={create} />
+      <ProjectsForm scope={FormScope.CREATE} onSubmit={create} />
     </PageContainer>
   );
 };
 
-export default UsersCreatePage;
+export default ProjectsCreatePage;

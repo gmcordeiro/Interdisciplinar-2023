@@ -13,23 +13,16 @@ import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
 import UsersForm, { UserFormValues } from "../components/UsersForm";
 
-const UsersPage = () => {
+const UsersEditPage = () => {
   const navigate = useNavigate();
 
   const { getUser, updateUser } = useContext(FakeStorageContext);
 
+  const { id } = useParams();
+
   const queryClient = useQueryClient();
 
   const toast = useToast();
-
-  const { id } = useParams();
-
-  const { data: user, isFetching } = useQuery({
-    queryKey: ["user", { id }],
-    queryFn: () => getUser(id as string),
-    initialData: null,
-    enabled: !!id,
-  });
 
   const { mutateAsync: update } = useMutation({
     mutationFn: (values: UserFormValues) => updateUser(id as string, values),
@@ -49,6 +42,13 @@ const UsersPage = () => {
         status: "error",
       });
     },
+  });
+
+  const { data: user, isFetching } = useQuery({
+    queryKey: ["user", { id }],
+    queryFn: () => getUser(id as string),
+    initialData: null,
+    enabled: !!id,
   });
 
   return (
@@ -79,4 +79,4 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default UsersEditPage;

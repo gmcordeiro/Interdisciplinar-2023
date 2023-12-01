@@ -1,4 +1,5 @@
 import {
+  Badge,
   HStack,
   IconButton,
   Progress,
@@ -10,27 +11,24 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
+import { Project } from "../types";
 
-const UsersGrid: React.FC = () => {
-  const { getUsers, removeUser } = useContext(FakeStorageContext);
+type ProjectsGridProps = {
+  projects: Project[];
+  fetching: boolean;
+};
 
+const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
   const queryClient = useQueryClient();
 
-  const { data: users, isFetching: fetching } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
-    initialData: [],
-  });
-
   const { mutateAsync: remove, isPending: removing } = useMutation({
-    mutationFn: removeUser,
+    // mutationFn: removeUser,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 
@@ -44,9 +42,8 @@ const UsersGrid: React.FC = () => {
         <Thead>
           <Tr>
             <Th>Name</Th>
-            <Th>Email</Th>
-            <Th>Category</Th>
-            <Th>Role</Th>
+            <Th>Owner</Th>
+            <Th>Status</Th>
             <Th></Th>
           </Tr>
         </Thead>
@@ -58,12 +55,17 @@ const UsersGrid: React.FC = () => {
               </Td>
             </Tr>
           )}
-          {users.map((user) => (
-            <Tr key={user.id}>
-              <Td>{user.name}</Td>
-              <Td>{user.email}</Td>
-              <Td>{user.category.name}</Td>
-              <Td>{user.category.role}</Td>
+          {projects.map((project) => (
+            <Tr key={project.id}>
+              <Td>{project.name}</Td>
+              <Td>{project.owner.email}</Td>
+              <Td>
+                {project.done ? (
+                  <Badge colorScheme="green">Done</Badge>
+                ) : (
+                  <Badge colorScheme="yellow">In progress</Badge>
+                )}
+              </Td>
               <Td>
                 <HStack spacing={2}>
                   <IconButton
@@ -71,7 +73,7 @@ const UsersGrid: React.FC = () => {
                     aria-label={"edit"}
                     size="sm"
                     onClick={() => {
-                      navigate(`/users/edit/${user.id}`);
+                      navigate(`/projects/edit/${project.id}`);
                     }}
                   />
                   <IconButton
@@ -79,10 +81,10 @@ const UsersGrid: React.FC = () => {
                     aria-label={"delete"}
                     size="sm"
                     colorScheme="red"
-                    isLoading={removing && deletedID === user.id}
+                    isLoading={removing && deletedID === project.id}
                     onClick={() => {
-                      setDeletedID(user.id);
-                      remove(user.id);
+                      setDeletedID(project.id);
+                      remove();
                     }}
                   />
                 </HStack>
@@ -95,4 +97,4 @@ const UsersGrid: React.FC = () => {
   );
 };
 
-export default UsersGrid;
+export default ProjectsGrid;

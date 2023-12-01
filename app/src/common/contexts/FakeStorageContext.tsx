@@ -9,6 +9,7 @@ import {
   UserCategory,
   UserRole,
 } from "../../auth/types";
+import { Project } from "../../tasks/types";
 import { UserFormValues } from "../../users/components/UsersForm";
 
 type FakeStorageContextValue = {
@@ -21,6 +22,7 @@ type FakeStorageContextValue = {
   getUser: (id: string) => Promise<User>;
   updateUser: (id: string, values: UserFormValues) => Promise<void>;
   getCategories: () => Promise<UserCategory[]>;
+  getProjects: () => Promise<Project[]>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -82,6 +84,37 @@ const InitialState = {
       role: UserRole.COLLABORATOR,
     },
   ],
+  projects: localStorage.getItem("projects")
+    ? JSON.parse(localStorage.getItem("projects") || "[]")
+    : ([
+        {
+          id: "1",
+          name: "Projeto 1",
+          description: "Descrição do projeto 1",
+          done: false,
+          goal: "Objetivo do projeto 1",
+          resources: "Recursos do projeto 1",
+          owner: {
+            id: "1",
+            name: "Admin",
+            email: "admin@email.com",
+          },
+          tasks: [
+            {
+              id: "1",
+              name: "Tarefa 1",
+              description: "Descrição da tarefa 1",
+              done: false,
+            },
+            {
+              id: "2",
+              name: "Tarefa 2",
+              description: "Descrição da tarefa 2",
+              done: false,
+            },
+          ],
+        },
+      ] as Project[]),
   sessions: localStorage.getItem("sessions")
     ? JSON.parse(localStorage.getItem("sessions") || "[]")
     : [],
@@ -90,6 +123,8 @@ const InitialState = {
 localStorage.setItem("users", JSON.stringify(InitialState.users));
 
 localStorage.setItem("categories", JSON.stringify(InitialState.categories));
+
+localStorage.setItem("projects", JSON.stringify(InitialState.projects));
 
 const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // eslint-disable-next-line
@@ -268,6 +303,14 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     []
   );
 
+  const getProjects = useCallback(async (): Promise<Project[]> => {
+    const projects = getResourse<Project>("projects");
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return projects;
+  }, []);
+
   const value = useMemo(
     () => ({
       login,
@@ -279,6 +322,7 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       createUser,
       getUser,
       updateUser,
+      getProjects,
     }),
     [
       login,
@@ -290,6 +334,7 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       createUser,
       getUser,
       updateUser,
+      getProjects,
     ]
   );
 

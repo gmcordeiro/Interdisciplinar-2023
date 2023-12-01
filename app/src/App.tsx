@@ -17,7 +17,6 @@ import { FakeStorageProvider } from "./common/contexts/FakeStorageContext";
 import MenuLayout from "./common/layouts/MenuLayout";
 import SimpleLayout from "./common/layouts/SimpleLayout";
 import ProjectsPage from "./tasks/pages/ProjectsPage";
-import { UsersProvider } from "./users/contexts/UsersContext";
 import UsersCreatePage from "./users/pages/UsersCreatePage";
 import UsersEditPage from "./users/pages/UsersEditPage";
 import UsersPage from "./users/pages/UsersPage";
@@ -72,11 +71,9 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: (
-          <UsersProvider>
-            <RoleGuard roles={[UserRole.ADMIN]}>
-              <Outlet />
-            </RoleGuard>
-          </UsersProvider>
+          <RoleGuard roles={[UserRole.ADMIN]}>
+            <Outlet />
+          </RoleGuard>
         ),
         children: [
           {
