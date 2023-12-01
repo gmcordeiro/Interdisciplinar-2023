@@ -23,6 +23,7 @@ type FakeStorageContextValue = {
   updateUser: (id: string, values: UserFormValues) => Promise<void>;
   getCategories: () => Promise<UserCategory[]>;
   getProjects: () => Promise<Project[]>;
+  getProject: (id: string) => Promise<Project>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -311,6 +312,20 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return projects;
   }, []);
 
+  const getProject = useCallback(async (id: string): Promise<Project> => {
+    const projects = getResourse<Project>("projects");
+
+    const project = projects.find((project) => project.id === id);
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return project;
+  }, []);
+
   const value = useMemo(
     () => ({
       login,
@@ -323,6 +338,7 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       getUser,
       updateUser,
       getProjects,
+      getProject,
     }),
     [
       login,
@@ -335,6 +351,7 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       getUser,
       updateUser,
       getProjects,
+      getProject,
     ]
   );
 

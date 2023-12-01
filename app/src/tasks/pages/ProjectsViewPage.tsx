@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
 import { FormScope } from "../../common/types/form";
+import ProjectTasksGrid from "../components/ProjectTasksGrid";
 import ProjectsForm from "../components/ProjectsForm";
 
 const ProjectsViewPage = () => {
@@ -16,7 +17,9 @@ const ProjectsViewPage = () => {
       ]}
       onBack={() => navigate("/projects")}
     >
-      <ProjectsForm scope={FormScope.VIEW} onSubmit={() => {}} />
+      <ProjectTasksGrid tasks={[]} fetching={false}>
+        <ProjectsForm scope={FormScope.VIEW} onSubmit={() => {}} />
+      </ProjectTasksGrid>
     </PageContainer>
   );
 };

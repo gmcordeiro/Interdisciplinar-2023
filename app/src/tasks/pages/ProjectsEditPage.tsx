@@ -1,11 +1,16 @@
 import { useToast } from "@chakra-ui/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
+import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
+import ProjectTasksGrid from "../components/ProjectTasksGrid";
 import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
 const ProjectsEditPage = () => {
+  const { getProject } = useContext(FakeStorageContext);
+
   const navigate = useNavigate();
 
   const toast = useToast();
@@ -13,6 +18,13 @@ const ProjectsEditPage = () => {
   const queryClient = useQueryClient();
 
   const { id } = useParams();
+
+  const { data: project, isFetching: fetching } = useQuery({
+    queryKey: ["project", { id }],
+    queryFn: () => getProject(id as string),
+    initialData: null,
+    enabled: !!id,
+  });
 
   const { mutateAsync: update } = useMutation({
     mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
@@ -42,7 +54,9 @@ const ProjectsEditPage = () => {
       ]}
       onBack={() => navigate("/projects")}
     >
-      <ProjectsForm scope={FormScope.EDIT} onSubmit={update} />
+      <ProjectTasksGrid tasks={project?.tasks || []} fetching={fetching}>
+        <ProjectsForm scope={FormScope.EDIT} onSubmit={update} />
+      </ProjectTasksGrid>
     </PageContainer>
   );
 };
