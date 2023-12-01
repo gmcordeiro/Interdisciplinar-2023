@@ -8,7 +8,7 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.20"
 }
 
-group = "com.example"
+group = "com.api"
 version = "0.0.1-SNAPSHOT"
 
 java {
@@ -25,6 +25,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("com.squareup.moshi:moshi-adapters:1.14.0")
+	implementation("com.squareup.okhttp3:okhttp:4.11.0")
+	implementation(kotlin("stdlib"))
+	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
