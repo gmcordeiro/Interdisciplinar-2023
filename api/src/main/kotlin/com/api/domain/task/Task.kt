@@ -1,13 +1,18 @@
 package com.api.domain.task
 
+import jakarta.persistence.Entity
 import jakarta.persistence.GenerationType
 import jakarta.persistence.GeneratedValue
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 
+@Entity
 class Task (
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Int,
 	val name: String,
 	val description: String,
 	val done: Boolean,
-	val dependsOn: Task?
+	@ManyToOne
+	val dependsOn: Task? = null
 )

@@ -1,15 +1,17 @@
 package com.api.domain.task
 
 import com.api.domain.user.User
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import kotlinx.datetime.*
+import jakarta.persistence.*
+import java.time.LocalDateTime
 
+@Entity
 class TaskExecution (
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Int,
-	val startedAt: Instant,
-	val finishedAt: Instant,
+	val startedAt: LocalDateTime,
+	val finishedAt: LocalDateTime,
+	@ManyToOne
 	val user: User,
+	@ManyToOne
 	val task: Task
 )
