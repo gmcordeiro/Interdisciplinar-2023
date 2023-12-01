@@ -1,4 +1,5 @@
 import {
+  Badge,
   HStack,
   IconButton,
   Progress,
@@ -14,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { UserRoleColor } from "../../auth/contants/roles";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 
 const UsersGrid: React.FC = () => {
@@ -63,7 +65,11 @@ const UsersGrid: React.FC = () => {
               <Td>{user.name}</Td>
               <Td>{user.email}</Td>
               <Td>{user.category.name}</Td>
-              <Td>{user.category.role}</Td>
+              <Td>
+                <Badge colorScheme={UserRoleColor[user.category.role]}>
+                  {user.category.role}
+                </Badge>
+              </Td>
               <Td>
                 <HStack spacing={2}>
                   <IconButton
