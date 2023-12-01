@@ -21,7 +21,7 @@ import { User } from "../../auth/types";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
 
-export type UserFormValues = User & {
+export type UserFormValues = Omit<User, "category"> & {
   category: string;
 };
 
@@ -46,8 +46,10 @@ const UsersForm: React.FC<UsersFormProps> = ({
     initialData: [],
   });
 
+  console.log(defaultValues);
+
   const form = useForm<UserFormValues>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const label = {
@@ -88,8 +90,8 @@ const UsersForm: React.FC<UsersFormProps> = ({
             {...form.register("password", {
               required: "Password is required",
               minLength: {
-                value: 6,
-                message: "Password must have at least 6 characters",
+                value: 5,
+                message: "Password must have at least 5 characters",
               },
             })}
           />

@@ -18,6 +18,8 @@ type FakeStorageContextValue = {
   getUsers: () => Promise<User[]>;
   removeUser: (id: string) => Promise<void>;
   createUser: (values: UserFormValues) => Promise<void>;
+  getUser: (id: string) => Promise<User>;
+  updateUser: (id: string, values: UserFormValues) => Promise<void>;
   getCategories: () => Promise<UserCategory[]>;
 };
 
@@ -222,6 +224,50 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     []
   );
 
+  const getUser = useCallback(async (id: string): Promise<User> => {
+    const users = getResourse<User>("users");
+
+    const user = users.find((user) => user.id === id);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return user;
+  }, []);
+
+  const updateUser = useCallback(
+    async (id: string, values: UserFormValues): Promise<void> => {
+      const users = getResourse<User>("users");
+
+      const categories = getResourse<UserCategory>("categories");
+
+      const category = categories.find(
+        (category) => category.id === values.category
+      );
+
+      if (!category) {
+        throw new Error("Category not found");
+      }
+
+      const user = { ...values, category } as User;
+
+      const newUsers = users.map((u) => {
+        if (u.id === id) {
+          return user;
+        }
+        return u;
+      });
+
+      localStorage.setItem("users", JSON.stringify(newUsers));
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    },
+    []
+  );
+
   const value = useMemo(
     () => ({
       login,
@@ -231,8 +277,20 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       removeUser,
       getCategories,
       createUser,
+      getUser,
+      updateUser,
     }),
-    [login, register, me, getUsers, removeUser, getCategories, createUser]
+    [
+      login,
+      register,
+      me,
+      getUsers,
+      removeUser,
+      getCategories,
+      createUser,
+      getUser,
+      updateUser,
+    ]
   );
 
   return (
