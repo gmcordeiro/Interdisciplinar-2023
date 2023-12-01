@@ -71,7 +71,7 @@ const UsersGrid: React.FC = () => {
                 </Badge>
               </Td>
               <Td>
-                <HStack spacing={2}>
+                <HStack spacing={2} justifyContent="flex-end">
                   <IconButton
                     icon={<FiEdit />}
                     aria-label={"edit"}

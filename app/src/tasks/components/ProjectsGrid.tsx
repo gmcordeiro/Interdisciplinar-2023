@@ -12,9 +12,11 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { FiEdit, FiTrash } from "react-icons/fi";
+import { useContext, useState } from "react";
+import { FiEdit, FiEye, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../auth/contexts/AuthContext";
+import { UserRole } from "../../auth/types";
 import { Project } from "../types";
 
 type ProjectsGridProps = {
@@ -24,6 +26,8 @@ type ProjectsGridProps = {
 
 const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
   const queryClient = useQueryClient();
+
+  const { user } = useContext(AuthContext);
 
   const { mutateAsync: remove, isPending: removing } = useMutation({
     // mutationFn: removeUser,
@@ -67,26 +71,42 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
                 )}
               </Td>
               <Td>
-                <HStack spacing={2}>
+                <HStack spacing={2} justifyContent="flex-end">
                   <IconButton
-                    icon={<FiEdit />}
-                    aria-label={"edit"}
+                    icon={<FiEye />}
+                    aria-label={"view"}
                     size="sm"
                     onClick={() => {
-                      navigate(`/projects/edit/${project.id}`);
+                      navigate(`/projects/${project.id}`);
                     }}
                   />
-                  <IconButton
-                    icon={<FiTrash />}
-                    aria-label={"delete"}
-                    size="sm"
-                    colorScheme="red"
-                    isLoading={removing && deletedID === project.id}
-                    onClick={() => {
-                      setDeletedID(project.id);
-                      remove();
-                    }}
-                  />
+                  {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
+                    user?.category?.role as UserRole
+                  ) && (
+                    <IconButton
+                      icon={<FiEdit />}
+                      aria-label={"edit"}
+                      size="sm"
+                      onClick={() => {
+                        navigate(`/projects/${project.id}/edit`);
+                      }}
+                    />
+                  )}
+                  {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
+                    user?.category?.role as UserRole
+                  ) && (
+                    <IconButton
+                      icon={<FiTrash />}
+                      aria-label={"delete"}
+                      size="sm"
+                      colorScheme="red"
+                      isLoading={removing && deletedID === project.id}
+                      onClick={() => {
+                        setDeletedID(project.id);
+                        remove();
+                      }}
+                    />
+                  )}
                 </HStack>
               </Td>
             </Tr>
