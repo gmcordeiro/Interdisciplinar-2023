@@ -10,7 +10,9 @@ import "./App.css";
 import { AuthProvider } from "./auth/contexts/AuthContext";
 import AuthGuard from "./auth/guards/AuthGuard";
 import GuestGuard from "./auth/guards/GuestGuard";
+import RoleGuard from "./auth/guards/RoleGuard";
 import LoginPage from "./auth/pages/LoginPage";
+import { UserRole } from "./auth/types";
 import { FakeStorageProvider } from "./common/contexts/FakeStorageContext";
 import MenuLayout from "./common/layouts/MenuLayout";
 import SimpleLayout from "./common/layouts/SimpleLayout";
@@ -47,6 +49,17 @@ const router = createBrowserRouter([
       },
       {
         path: "/projects",
+        element: (
+          <RoleGuard
+            roles={[
+              UserRole.ADMIN,
+              UserRole.COLLABORATOR,
+              UserRole.COORDINATOR,
+            ]}
+          >
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           {
             path: "",
@@ -58,7 +71,9 @@ const router = createBrowserRouter([
         path: "/users",
         element: (
           <UsersProvider>
-            <Outlet />
+            <RoleGuard roles={[UserRole.ADMIN]}>
+              <Outlet />
+            </RoleGuard>
           </UsersProvider>
         ),
         children: [

@@ -40,7 +40,7 @@ const UsersGrid: React.FC = () => {
             </Tr>
           )}
           {users.map((user) => (
-            <Tr>
+            <Tr key={user.id}>
               <Td>{user.name}</Td>
               <Td>{user.email}</Td>
               <Td>{user.category.name}</Td>

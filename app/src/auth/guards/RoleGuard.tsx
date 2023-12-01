@@ -4,16 +4,16 @@ import { AuthContext } from "../contexts/AuthContext";
 import { UserRole } from "../types";
 
 type RoleGuardProps = {
-  role: UserRole;
+  roles: UserRole[];
 };
 
 const RoleGuard: React.FC<PropsWithChildren<RoleGuardProps>> = ({
-  role,
+  roles,
   children,
 }) => {
   const { user } = useContext(AuthContext);
 
-  if (user?.category?.role !== role) {
+  if (!roles.includes(user?.category?.role as UserRole)) {
     return <Navigate to="/" />;
   }
 
