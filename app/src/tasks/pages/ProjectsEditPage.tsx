@@ -2,6 +2,8 @@ import { useToast } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { AuthContext } from "../../auth/contexts/AuthContext";
+import { UserRole } from "../../auth/types";
 import PageContainer from "../../common/components/PageContainer";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
@@ -10,6 +12,8 @@ import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
 const ProjectsEditPage = () => {
   const { getProject } = useContext(FakeStorageContext);
+
+  const { user } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -61,7 +65,11 @@ const ProjectsEditPage = () => {
       <ProjectTasksGrid tasks={project?.tasks || []} fetching={fetching}>
         {project && (
           <ProjectsForm
-            scope={FormScope.EDIT}
+            scope={
+              user?.category?.role === UserRole.COLLABORATOR
+                ? FormScope.VIEW
+                : FormScope.EDIT
+            }
             onSubmit={update}
             defaultValues={project as ProjectsFormValues}
           />

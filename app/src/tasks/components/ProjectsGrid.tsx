@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
-import { FiEdit, FiEye, FiTrash } from "react-icons/fi";
+import { FiSettings, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
@@ -73,25 +73,13 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
               <Td>
                 <HStack spacing={2} justifyContent="flex-end">
                   <IconButton
-                    icon={<FiEye />}
-                    aria-label={"view"}
+                    icon={<FiSettings />}
+                    aria-label={"edit"}
                     size="sm"
                     onClick={() => {
-                      navigate(`/projects/${project.id}`);
+                      navigate(`/projects/${project.id}/edit`);
                     }}
                   />
-                  {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
-                    user?.category?.role as UserRole
-                  ) && (
-                    <IconButton
-                      icon={<FiEdit />}
-                      aria-label={"edit"}
-                      size="sm"
-                      onClick={() => {
-                        navigate(`/projects/${project.id}/edit`);
-                      }}
-                    />
-                  )}
                   {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
                     user?.category?.role as UserRole
                   ) && (

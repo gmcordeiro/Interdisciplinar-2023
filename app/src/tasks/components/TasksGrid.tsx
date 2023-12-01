@@ -11,8 +11,11 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useContext } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiClock, FiSettings, FiTrash } from "react-icons/fi";
+import { AuthContext } from "../../auth/contexts/AuthContext";
+import { UserRole } from "../../auth/types";
 import { Task } from "../types";
 
 type TasksGridProps = {
@@ -28,6 +31,8 @@ const TasksGrid: React.FC<TasksGridProps> = ({
   onEdit,
   onClock,
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <TableContainer>
       <Table variant="simple">
@@ -76,21 +81,26 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                     size="sm"
                     onClick={() => onEdit(task)}
                   />
-                  {!task.done && (
+                  {!task.done &&
+                    user?.category?.role === UserRole.COLLABORATOR && (
+                      <IconButton
+                        icon={<FiClock />}
+                        aria-label={"on clock"}
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={() => onClock(task)}
+                      />
+                    )}
+                  {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
+                    user?.category?.role as UserRole
+                  ) && (
                     <IconButton
-                      icon={<FiClock />}
-                      aria-label={"on clock"}
+                      icon={<FiTrash />}
+                      aria-label={"delete"}
                       size="sm"
-                      colorScheme="blue"
-                      onClick={() => onClock(task)}
+                      colorScheme="red"
                     />
                   )}
-                  <IconButton
-                    icon={<FiTrash />}
-                    aria-label={"delete"}
-                    size="sm"
-                    colorScheme="red"
-                  />
                 </HStack>
               </Td>
             </Tr>

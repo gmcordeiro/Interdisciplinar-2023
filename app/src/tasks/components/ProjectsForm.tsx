@@ -114,7 +114,7 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
           </FormErrorMessage>
         </FormControl>
         <Flex mt={5} justifyContent="flex-end" gap={3}>
-          <Button variant="outline" onClick={() => navigate("/users")}>
+          <Button variant="outline" onClick={() => navigate("/projects")}>
             Back
           </Button>
           {scope !== FormScope.VIEW && (
