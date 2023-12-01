@@ -20,11 +20,12 @@ interface SidebarProps extends BoxProps {
 interface LinkItemProps {
   name: string;
   icon: IconType;
+  href: string;
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Usuários", icon: FiUser },
-  { name: "Projetos", icon: FaTasks },
+  { name: "Usuários", icon: FiUser, href: "/users" },
+  { name: "Projetos", icon: FaTasks, href: "/projects" },
 ];
 
 const Sidebar = ({ onClose, ...rest }: SidebarProps) => {
@@ -46,7 +47,7 @@ const Sidebar = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} href={link.href}>
           {link.name}
         </NavItem>
       ))}

@@ -1,16 +1,18 @@
-import { Box, Flex, FlexProps, Icon } from "@chakra-ui/react";
+import { Link as ChakraLink, Flex, FlexProps, Icon } from "@chakra-ui/react";
 import { IconType } from "react-icons";
+import { NavLink } from "react-router-dom";
 
 interface NavItemProps extends FlexProps {
   icon: IconType;
   children: React.ReactNode;
+  href: string;
 }
 
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, children, href, ...rest }: NavItemProps) => {
   return (
-    <Box
-      as="a"
-      href="#"
+    <ChakraLink
+      as={NavLink}
+      to={href}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -39,7 +41,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         )}
         {children}
       </Flex>
-    </Box>
+    </ChakraLink>
   );
 };
 

@@ -2,6 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Navigate,
+  Outlet,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
@@ -14,6 +15,8 @@ import { FakeStorageProvider } from "./common/contexts/FakeStorageContext";
 import MenuLayout from "./common/layouts/MenuLayout";
 import SimpleLayout from "./common/layouts/SimpleLayout";
 import ProjectsPage from "./tasks/pages/ProjectsPage";
+import { UsersProvider } from "./users/contexts/UsersContext";
+import UsersPage from "./users/pages/UsersPage";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +51,20 @@ const router = createBrowserRouter([
           {
             path: "",
             element: <ProjectsPage />,
+          },
+        ],
+      },
+      {
+        path: "/users",
+        element: (
+          <UsersProvider>
+            <Outlet />
+          </UsersProvider>
+        ),
+        children: [
+          {
+            path: "",
+            element: <UsersPage />,
           },
         ],
       },

@@ -22,6 +22,7 @@ type FakeStorageContextValue = {
   login: (credentials: LoginUserInput) => Promise<LoginUserPayload>;
   register: (user: RegisterUserInput) => Promise<RegisterUserPayload>;
   me: (token: string) => Promise<LoginUserPayload>;
+  getUsers: () => Promise<User[]>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -170,6 +171,10 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     [sessions]
   );
 
+  const getUsers = useCallback(async (): Promise<User[]> => {
+    return new Promise((resolve) => setTimeout(() => resolve(users), 500));
+  }, [users]);
+
   const value = useMemo(
     () => ({
       users,
@@ -177,8 +182,9 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       login,
       register,
       me,
+      getUsers,
     }),
-    [users, categories, login, register, me]
+    [users, categories, login, register, me, getUsers]
   );
 
   return (
