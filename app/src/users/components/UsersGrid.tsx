@@ -1,4 +1,6 @@
 import {
+  HStack,
+  IconButton,
   Progress,
   Table,
   TableContainer,
@@ -8,10 +10,14 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { FiEdit, FiTrash } from "react-icons/fi";
 import { useUsers } from "../contexts/UsersContext";
 
 const UsersGrid: React.FC = () => {
-  const { users, fetching } = useUsers();
+  const { users, fetching, remove, removing } = useUsers();
+
+  const [deletedID, setDeletedID] = useState<string | null>(null);
 
   return (
     <TableContainer>
@@ -22,6 +28,7 @@ const UsersGrid: React.FC = () => {
             <Th>Email</Th>
             <Th>Catagory</Th>
             <Th>Role</Th>
+            <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -38,6 +45,22 @@ const UsersGrid: React.FC = () => {
               <Td>{user.email}</Td>
               <Td>{user.category.name}</Td>
               <Td>{user.category.role}</Td>
+              <Td>
+                <HStack spacing={2}>
+                  <IconButton icon={<FiEdit />} aria-label={"edit"} size="sm" />
+                  <IconButton
+                    icon={<FiTrash />}
+                    aria-label={"delete"}
+                    size="sm"
+                    colorScheme="red"
+                    isLoading={removing && deletedID === user.id}
+                    onClick={() => {
+                      setDeletedID(user.id);
+                      remove(user.id);
+                    }}
+                  />
+                </HStack>
+              </Td>
             </Tr>
           ))}
         </Tbody>

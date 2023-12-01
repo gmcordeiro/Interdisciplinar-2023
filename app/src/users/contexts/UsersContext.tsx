@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   PropsWithChildren,
   createContext,
@@ -13,6 +13,8 @@ import { FormScope } from "../../common/types/form";
 type UsersContextValue = {
   users: User[];
   fetching: boolean;
+  remove: (id: string) => Promise<void>;
+  removing: boolean;
   scope: FormScope;
   setScope: (scope: FormScope) => void;
 };
@@ -20,7 +22,9 @@ type UsersContextValue = {
 const UsersContext = createContext<UsersContextValue>({} as UsersContextValue);
 
 const UsersProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { getUsers } = useContext(FakeStorageContext);
+  const { getUsers, removeUser } = useContext(FakeStorageContext);
+
+  const queryClient = useQueryClient();
 
   const { data: users, isFetching: fetching } = useQuery({
     queryKey: ["users"],
@@ -28,11 +32,18 @@ const UsersProvider: React.FC<PropsWithChildren> = ({ children }) => {
     initialData: [],
   });
 
+  const { mutateAsync: remove, isPending: removing } = useMutation({
+    mutationFn: removeUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+
   const [scope, setScope] = useState(FormScope.INDEX);
 
   const value = useMemo(
-    () => ({ users, fetching, scope, setScope }),
-    [users, fetching, scope, setScope]
+    () => ({ users, fetching, scope, setScope, remove, removing }),
+    [users, fetching, scope, remove, removing]
   );
 
   return (

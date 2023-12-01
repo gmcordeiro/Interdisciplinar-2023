@@ -1,10 +1,4 @@
-import {
-  PropsWithChildren,
-  createContext,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import { PropsWithChildren, createContext, useCallback, useMemo } from "react";
 import { v4 as uuid } from "uuid";
 import {
   LoginUserInput,
@@ -17,12 +11,11 @@ import {
 } from "../../auth/types";
 
 type FakeStorageContextValue = {
-  users: User[];
-  categories: UserCategory[];
   login: (credentials: LoginUserInput) => Promise<LoginUserPayload>;
   register: (user: RegisterUserInput) => Promise<RegisterUserPayload>;
   me: (token: string) => Promise<LoginUserPayload>;
   getUsers: () => Promise<User[]>;
+  removeUser: (id: string) => Promise<void>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -94,14 +87,19 @@ localStorage.setItem("users", JSON.stringify(InitialState.users));
 localStorage.setItem("categories", JSON.stringify(InitialState.categories));
 
 const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>(InitialState.users);
-
-  const [sessions, setSessions] = useState<User[]>(InitialState.sessions);
-
-  const [categories] = useState<UserCategory[]>(InitialState.categories);
+  // eslint-disable-next-line
+  const getResourse = <T extends unknown>(resource: string): T[] => {
+    try {
+      return JSON.parse(localStorage.getItem(resource) || "[]") as T[];
+    } catch (error) {
+      return [];
+    }
+  };
 
   const login = useCallback(
     async (credentials: LoginUserInput): Promise<LoginUserPayload> => {
+      const users = getResourse<User>("users");
+
       const user = users.find((user) => user.email === credentials.email);
 
       if (!user) {
@@ -110,7 +108,7 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       user.token = uuid();
 
-      setSessions([...sessions, user]);
+      const sessions = getResourse<User>("sessions");
 
       localStorage.setItem("sessions", JSON.stringify([...sessions, user]));
 
@@ -120,11 +118,17 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
         user,
       };
     },
-    [users, sessions]
+    []
   );
 
   const register = useCallback(
     async (input: RegisterUserInput): Promise<RegisterUserPayload> => {
+      const users = getResourse<User>("users");
+
+      const sessions = getResourse<User>("sessions");
+
+      const categories = getResourse<UserCategory>("categories");
+
       const category = categories.find(
         (category) => category.id === input.category
       );
@@ -135,13 +139,11 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
       const user = { ...input, id: uuid(), category } as User;
 
-      setUsers([...users, user]);
-
       localStorage.setItem("users", JSON.stringify([...users, user]));
 
       user.token = uuid();
 
-      setSessions([...sessions, user]);
+      localStorage.setItem("sessions", JSON.stringify([...sessions, user]));
 
       await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -149,42 +151,52 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
         user,
       };
     },
-    [categories, users, sessions]
+    []
   );
 
-  const me = useCallback(
-    async (token: string): Promise<LoginUserPayload> => {
-      const user = sessions.find((user) => user.token === token);
+  const me = useCallback(async (token: string): Promise<LoginUserPayload> => {
+    const sessions = getResourse<User>("sessions");
 
-      console.log({ user, token, sessions });
+    const user = sessions.find((user) => user.token === token);
 
-      if (!user) {
-        throw new Error("User not found");
-      }
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
-      return {
-        user,
-      };
-    },
-    [sessions]
-  );
+    return {
+      user,
+    };
+  }, []);
 
   const getUsers = useCallback(async (): Promise<User[]> => {
-    return new Promise((resolve) => setTimeout(() => resolve(users), 500));
-  }, [users]);
+    const users = getResourse<User>("users");
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return users;
+  }, []);
+
+  const removeUser = useCallback(async (id: string): Promise<void> => {
+    const users = getResourse<User>("users");
+
+    const newUsers = users.filter((user) => user.id !== id);
+
+    localStorage.setItem("users", JSON.stringify(newUsers));
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }, []);
 
   const value = useMemo(
     () => ({
-      users,
-      categories,
       login,
       register,
       me,
       getUsers,
+      removeUser,
     }),
-    [users, categories, login, register, me, getUsers]
+    [login, register, me, getUsers, removeUser]
   );
 
   return (
