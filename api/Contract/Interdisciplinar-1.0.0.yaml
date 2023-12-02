@@ -1,4 +1,0 @@
-servers:
-  - url: hhtp://localhost:8080
-    description: Local Host
-paths:

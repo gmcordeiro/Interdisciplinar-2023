@@ -4,7 +4,7 @@ import com.api.domain.user.User
 import com.api.domain.user.UserCategory
 
 data class UserQuery(
-    val id: Long,
+    val id: Long?,
     val name: String,
     val email: String,
     val category: UserCategory

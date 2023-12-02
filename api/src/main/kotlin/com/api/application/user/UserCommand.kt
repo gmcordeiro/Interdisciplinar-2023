@@ -17,7 +17,7 @@ fun UserCommand.toUser() = User (
 	password = password
 )
 
-fun UserCommand.toUser(userID: Long) = User (
+fun UserCommand.toUser(userID: Long?) = User (
 	id = userID,
 	name = name,
 	email = email,

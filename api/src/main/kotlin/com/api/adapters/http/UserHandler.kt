@@ -12,10 +12,14 @@ class UserHandler (
     fun findAll(): ResponseEntity<List<UserQuery>>{
         val user = userService.findAll()
         return ResponseEntity.ok(user)
-    }
-
-    fun findByEmail(userEmail: String): ResponseEntity<UserQuery>{
+	}
+	fun findByEmail(userEmail: String): ResponseEntity<UserQuery>{
         val user = userService.findByEmail(userEmail)
         return ResponseEntity.ok(user)
     }
+	fun findByID(userID: Long): ResponseEntity<UserQuery>{
+		val user = userService.findByID(userID)
+		return ResponseEntity.ok(user)
+	}
+
 }

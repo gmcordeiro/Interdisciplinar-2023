@@ -22,7 +22,7 @@ class UserCtrl(
 
     @GetMapping("/users/{userID}")
     fun findByID(@PathVariable userID: Long): ResponseEntity<UserQuery> {
-        TODO("Not yet implemented")
+        return userHandler.findByID(userID)
     }
 
     @PostMapping("/auth/login")
