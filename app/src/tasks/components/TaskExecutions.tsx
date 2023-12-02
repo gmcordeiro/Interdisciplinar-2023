@@ -6,15 +6,17 @@ import ExecutionsGrid from "./ExecutionsGrid";
 type TaskExecutionsProps = PropsWithChildren<{
   executions: TaskExecution[];
   fetching: boolean;
+  tab: "details" | "executions";
 }>;
 
 const TaskExecutions: React.FC<TaskExecutionsProps> = ({
   executions,
   fetching,
   children,
+  tab,
 }) => {
   return (
-    <Tabs isFitted>
+    <Tabs defaultIndex={tab === "executions" ? 1 : 0}>
       <TabList>
         <Tab>Details</Tab>
         <Tab>Executions</Tab>

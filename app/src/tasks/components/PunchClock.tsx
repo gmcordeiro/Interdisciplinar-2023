@@ -12,23 +12,26 @@ import moment from "moment";
 import { useContext, useMemo } from "react";
 import { FaClock } from "react-icons/fa";
 import { FiArrowRight } from "react-icons/fi";
+import { TbClockCheck } from "react-icons/tb";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { Task } from "../types";
 
+export enum PunchType {
+  CLOCK_IN = "CLOCK_IN",
+  CLOCK_OUT = "CLOCK_OUT",
+}
+
 type PunchClockProps = {
   task: Task;
-  onSubmit: () => void;
+  punching: boolean;
+  onPunch: (type: PunchType) => void;
   onCancel: () => void;
 };
 
-enum PunchType {
-  START,
-  STOP,
-}
-
 const PunchClock: React.FC<PunchClockProps> = ({
   task,
-  onSubmit,
+  punching,
+  onPunch,
   onCancel,
 }) => {
   const { user } = useContext(AuthContext);
@@ -44,23 +47,25 @@ const PunchClock: React.FC<PunchClockProps> = ({
   );
 
   const type = useMemo(
-    () => (execution ? PunchType.STOP : PunchType.START),
+    () => (execution ? PunchType.CLOCK_OUT : PunchType.CLOCK_IN),
     [execution]
   );
 
   return (
     <Stack>
       <Flex direction="row" alignItems="center">
-        <InputGroup color={type === PunchType.START ? "blue.500" : "gray.600"}>
+        <InputGroup
+          color={type === PunchType.CLOCK_IN ? "blue.500" : "gray.600"}
+        >
           <InputLeftElement>
-            <FaClock />
+            {type === PunchType.CLOCK_IN ? <FaClock /> : <TbClockCheck />}
           </InputLeftElement>
           <Input
             readOnly
             type="text"
             fontSize="sm"
             value={
-              type === PunchType.START
+              type === PunchType.CLOCK_IN
                 ? "Now"
                 : moment(execution?.startedAt).format("DD/MM/YYYY HH:mm:ss")
             }
@@ -69,7 +74,9 @@ const PunchClock: React.FC<PunchClockProps> = ({
         <Box w={10} mx={2}>
           <FiArrowRight />
         </Box>
-        <InputGroup color={type === PunchType.START ? "gray.500" : "blue.500"}>
+        <InputGroup
+          color={type === PunchType.CLOCK_IN ? "gray.500" : "blue.500"}
+        >
           <InputLeftElement>
             <FaClock />
           </InputLeftElement>
@@ -77,19 +84,21 @@ const PunchClock: React.FC<PunchClockProps> = ({
             readOnly
             type="text"
             fontSize="sm"
-            value={type === PunchType.START ? "Pending" : "Now"}
+            value={type === PunchType.CLOCK_IN ? "Pending" : "Now"}
           />
         </InputGroup>
       </Flex>
-      <HStack justifyContent="flex-end" my={3}>
-        <Button variant="outline" onClick={onCancel}>
+      <HStack justifyContent="flex-end" my={1}>
+        <Button variant="outline" onClick={onCancel} size={"sm"}>
           Cancel
         </Button>
         <Button
-          colorScheme={type === PunchType.START ? "blue" : "red"}
-          onClick={onSubmit}
+          colorScheme={type === PunchType.CLOCK_IN ? "blue" : "red"}
+          onClick={() => onPunch(type)}
+          size={"sm"}
+          isLoading={punching}
         >
-          {type === PunchType.START ? "Clock in" : "Clock out"}
+          {type === PunchType.CLOCK_IN ? "Clock in" : "Clock out"}
         </Button>
       </HStack>
     </Stack>

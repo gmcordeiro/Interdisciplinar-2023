@@ -19,7 +19,6 @@ import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
 import { Task } from "../types";
-import PunchClock from "./PunchClock";
 import TaskExecutions from "./TaskExecutions";
 import TasksForm from "./TasksForm";
 import TasksGrid from "./TasksGrid";
@@ -40,7 +39,7 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({
 
   const [task, setTask] = useState<Task | null>(null);
 
-  const [clocking, setClocking] = useState<Task | null>(null);
+  const [tab, setTab] = useState<"details" | "executions">("details");
 
   return (
     <>
@@ -72,6 +71,7 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({
               <TaskExecutions
                 executions={task?.executions || []}
                 fetching={false}
+                tab={tab}
               >
                 {task && (
                   <TasksForm
@@ -90,35 +90,6 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      <Modal
-        isOpen={!!clocking}
-        onClose={() => {
-          setClocking(null);
-        }}
-        size="xl"
-        isCentered
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Clock In/Out</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {clocking && (
-              <PunchClock
-                task={clocking}
-                onSubmit={() => {
-                  setClocking(null);
-                }}
-                onCancel={() => {
-                  setClocking(null);
-                }}
-              />
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
       <Tabs>
         <TabList>
           <Tab>Details</Tab>
@@ -130,12 +101,10 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({
             <TasksGrid
               tasks={tasks}
               fetching={fetching}
-              onEdit={(t) => {
-                setTask(t);
+              onEdit={(_task, tab) => {
+                setTab(tab || "details");
+                setTask(_task);
                 setScope(FormScope.EDIT);
-              }}
-              onClock={(t) => {
-                setClocking(t);
               }}
             />
             <Flex mt={5} justifyContent="flex-end" gap={3}>

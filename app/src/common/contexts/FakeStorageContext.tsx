@@ -24,6 +24,8 @@ type FakeStorageContextValue = {
   getCategories: () => Promise<UserCategory[]>;
   getProjects: () => Promise<Project[]>;
   getProject: (id: string) => Promise<Project>;
+  clockIn: (taskId: string) => Promise<void>;
+  clockOut: (taskId: string) => Promise<void>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -338,6 +340,89 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return project;
   }, []);
 
+  const clockIn = useCallback(async (taskId: string): Promise<void> => {
+    const projects = getResourse<Project>("projects");
+
+    const user = getResourse<User>("sessions").pop() as User;
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const newProjects = projects.map((project) => {
+      const newTasks = project.tasks.map((task) => {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            executions: [
+              ...(task.executions || []),
+              {
+                id: uuid(),
+                details: "",
+                startedAt: new Date(),
+                finishedAt: null,
+                user,
+              },
+            ],
+          };
+        }
+        return task;
+      });
+      return {
+        ...project,
+        tasks: newTasks,
+      };
+    });
+
+    localStorage.setItem("projects", JSON.stringify(newProjects));
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }, []);
+
+  const clockOut = useCallback(async (taskId: string): Promise<void> => {
+    const projects = getResourse<Project>("projects");
+
+    const user = getResourse<User>("sessions").pop() as User;
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const newProjects = projects.map((project) => {
+      const newTasks = project.tasks.map((task) => {
+        if (task.id === taskId) {
+          const execution = task.executions?.pop();
+
+          if (!execution) {
+            throw new Error("Execution not found");
+          }
+
+          return {
+            ...task,
+            executions: task.executions?.map((execution) => {
+              if (execution.id === execution.id) {
+                return {
+                  ...execution,
+                  finishedAt: new Date(),
+                };
+              }
+              return execution;
+            }),
+          };
+        }
+        return task;
+      });
+      return {
+        ...project,
+        tasks: newTasks,
+      };
+    });
+
+    localStorage.setItem("projects", JSON.stringify(newProjects));
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }, []);
+
   const value = useMemo(
     () => ({
       login,
@@ -351,6 +436,8 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       updateUser,
       getProjects,
       getProject,
+      clockIn,
+      clockOut,
     }),
     [
       login,
@@ -364,6 +451,8 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       updateUser,
       getProjects,
       getProject,
+      clockIn,
+      clockOut,
     ]
   );
 
