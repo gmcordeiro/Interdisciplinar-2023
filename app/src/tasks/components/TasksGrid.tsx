@@ -102,6 +102,7 @@ const TasksGrid: React.FC<TasksGridProps> = ({
           <Tr>
             <Th>Name</Th>
             <Th>Status</Th>
+            <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
