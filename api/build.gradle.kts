@@ -21,15 +21,18 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("io.jsonwebtoken:jjwt:0.12.3")
+
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("com.squareup.moshi:moshi-adapters:1.14.0")
-	implementation("com.squareup.okhttp3:okhttp:4.11.0")
 	implementation(kotlin("stdlib"))
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
+
 	runtimeOnly("com.mysql:mysql-connector-j")
+
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }

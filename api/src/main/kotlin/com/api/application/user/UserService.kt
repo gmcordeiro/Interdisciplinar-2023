@@ -1,7 +1,6 @@
 package com.api.application.user
 
 import com.api.application.user.exceptions.UserNotFoundException
-import com.api.application.user.exceptions.UserNotInsertException
 import com.api.domain.user.User
 import com.api.domain.user.UserRepository
 import com.api.domain.user.toUserQuery
@@ -23,9 +22,8 @@ class UserService (
         return listUserQuery
     }
 
-    fun findByEmail(userEmail: String): UserQuery? {
-        val user = userRepository.findByEmail(userEmail)
-        return user?.toUserQuery() ?: throw UserNotFoundException(userEmail = userEmail)
+    fun findByEmail(userEmail: String): User? {
+        return userRepository.findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
     }
 
     fun findByID(userID: Long): UserQuery? {
@@ -37,15 +35,16 @@ class UserService (
     fun insert (user: UserCommand): UserQuery? {
         val userDomain = user.toUser()
         userRepository.save(userDomain)
-
-        return findByEmail(user.email)
+        val insertUser = findByEmail(user.email)
+        return insertUser?.toUserQuery()
     }
 
     fun update (user: UserCommand, userEmail: String): UserQuery? {
         val userOld = findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
         val userDomain = user.toUser(userOld.id)
         userRepository.save(userDomain)
-        return findByEmail(user.email)
+        val updateUser = findByEmail(user.email)
+        return updateUser?.toUserQuery()
     }
 
 }

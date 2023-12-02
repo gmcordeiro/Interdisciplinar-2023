@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class UserCtrl(
+class UserController(
     private val userHandler: UserHandler
 ) {
     @GetMapping("/users")
@@ -15,18 +15,8 @@ class UserCtrl(
         return userHandler.findAll()
     }
 
-    @GetMapping("/users/{userEmail}")
-    fun findByEmail(@PathVariable userEmail: String): ResponseEntity<UserQuery> {
-        return userHandler.findByEmail(userEmail)
-    }
-
     @GetMapping("/users/{userID}")
     fun findByID(@PathVariable userID: Long): ResponseEntity<UserQuery> {
         return userHandler.findByID(userID)
-    }
-
-    @PostMapping("/auth/login")
-    fun login(@RequestBody userLogin: UserLogin): ResponseEntity<UserQuery>{
-        TODO("Not yet implemented")
     }
 }

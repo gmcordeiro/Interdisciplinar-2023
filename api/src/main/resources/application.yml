@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    name: tetinha
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://142.93.229.183:3306/tetinha?useTimezone=true&serverTimezone=UTC
+    username: tetinha
+    password: 8pj6}CFx58*
