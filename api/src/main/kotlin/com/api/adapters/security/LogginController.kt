@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class LogginController (
 	private val userService: UserService,
-	private val encoderPassword: EncoderPassword
+	private val encoderPassword: EncoderPassword,
 	private val jwtUtil: JWTUtil
 ) {
 	@PostMapping("/auth/login")
