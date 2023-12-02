@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class LogginController (
 	private val userService: UserService,
 	private val encoderPassword: EncoderPassword
+	private val jwtUtil: JWTUtil
 ) {
 	@PostMapping("/auth/login")
 	fun auth(@RequestBody credentials: Credentials): ResponseEntity<Token> {
@@ -21,6 +22,9 @@ class LogginController (
 		if (encoderPassword.matches(credentials.password, user.password)){
 			throw InvalidcredentialsExceptions()
 		}
-		return ResponseEntity.ok(Token("Token ainda não foi implementado"))
+
+		val accessToken = jwtUtil.generateToken(user) ?: throw InvalidcredentialsExceptions()
+
+		return ResponseEntity.ok(Token(accessToken))
 	}
 }
