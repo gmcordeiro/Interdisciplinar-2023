@@ -49,12 +49,10 @@ const ExecutionsGrid: React.FC<ExecutionsGridProps> = ({
             <Tr key={execution.id}>
               <Td>{execution.user.name}</Td>
               <Td>{execution.details}</Td>
-              <Td>
-                {moment(execution.startedAt).format("DD/MM/YYYY HH:mm:ss")}
-              </Td>
+              <Td>{moment(execution.startedAt).format("DD/MM/YY HH:mm")}</Td>
               <Td>
                 {execution.finishedAt ? (
-                  moment(execution.finishedAt).format("DD/MM/YYYY HH:mm:ss")
+                  moment(execution.finishedAt).format("DD/MM/YY HH:mm")
                 ) : (
                   <Badge colorScheme="yellow">In progress</Badge>
                 )}

@@ -17,6 +17,7 @@ import {
   Th,
   Thead,
   Tr,
+  useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -95,6 +96,8 @@ const TasksGrid: React.FC<TasksGridProps> = ({
     },
   });
 
+  const popoverWidth = useBreakpointValue({ md: "440" });
+
   return (
     <TableContainer>
       <Table variant="simple">
@@ -161,7 +164,7 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                           />
                         )}
                     </PopoverTrigger>
-                    <PopoverContent>
+                    <PopoverContent width={popoverWidth}>
                       <PopoverArrow />
                       <PopoverHeader>Clock In/Out</PopoverHeader>
                       <PopoverCloseButton />
