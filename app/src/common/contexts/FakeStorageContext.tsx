@@ -9,7 +9,7 @@ import {
   UserCategory,
   UserRole,
 } from "../../auth/types";
-import { Project } from "../../tasks/types";
+import { Project, Task, TaskExecution } from "../../tasks/types";
 import { UserFormValues } from "../../users/components/UsersForm";
 
 type FakeStorageContextValue = {
@@ -26,6 +26,8 @@ type FakeStorageContextValue = {
   getProject: (id: string) => Promise<Project>;
   clockIn: (taskId: string) => Promise<void>;
   clockOut: (taskId: string) => Promise<void>;
+  getTasks: (projectId: string) => Promise<Task[]>;
+  getExecutions: (taskId: string) => Promise<TaskExecution[]>;
 };
 
 const FakeStorageContext = createContext<FakeStorageContextValue>(
@@ -340,6 +342,41 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return project;
   }, []);
 
+  const getTasks = useCallback(async (id: string): Promise<Task[]> => {
+    const projects = getResourse<Project>("projects");
+
+    const project = projects.find((project) => project.id === id);
+
+    if (!project) {
+      throw new Error("Project not found");
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    return project?.tasks as Task[];
+  }, []);
+
+  const getExecutions = useCallback(
+    async (taskId: string): Promise<TaskExecution[]> => {
+      const projects = getResourse<Project>("projects");
+
+      const executions: TaskExecution[] = [];
+
+      for (const project of projects) {
+        for (const task of project.tasks) {
+          if (task.id === taskId) {
+            executions.push(...(task.executions || []));
+          }
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      return executions;
+    },
+    []
+  );
+
   const clockIn = useCallback(async (taskId: string): Promise<void> => {
     const projects = getResourse<Project>("projects");
 
@@ -438,6 +475,8 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       getProject,
       clockIn,
       clockOut,
+      getTasks,
+      getExecutions,
     }),
     [
       login,
@@ -453,6 +492,8 @@ const FakeStorageProvider: React.FC<PropsWithChildren> = ({ children }) => {
       getProject,
       clockIn,
       clockOut,
+      getTasks,
+      getExecutions,
     ]
   );
 

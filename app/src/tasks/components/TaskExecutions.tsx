@@ -1,20 +1,29 @@
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import { PropsWithChildren } from "react";
-import { TaskExecution } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import { PropsWithChildren, useContext } from "react";
+import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
+import { Task } from "../types";
 import ExecutionsGrid from "./ExecutionsGrid";
 
 type TaskExecutionsProps = PropsWithChildren<{
-  executions: TaskExecution[];
-  fetching: boolean;
   tab: "details" | "executions";
+  task: Task;
 }>;
 
 const TaskExecutions: React.FC<TaskExecutionsProps> = ({
-  executions,
-  fetching,
   children,
   tab,
+  task,
 }) => {
+  const { getExecutions } = useContext(FakeStorageContext);
+
+  const { data: executions, isLoading: fetching } = useQuery({
+    queryKey: ["task-executions", { id: task.id }],
+    queryFn: () => getExecutions(task.id),
+    initialData: [],
+    enabled: !!task.id,
+  });
+
   return (
     <Tabs defaultIndex={tab === "executions" ? 1 : 0}>
       <TabList>

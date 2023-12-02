@@ -1,4 +1,4 @@
-import { useToast } from "@chakra-ui/react";
+import { Progress, useToast } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,7 +7,7 @@ import { UserRole } from "../../auth/types";
 import PageContainer from "../../common/components/PageContainer";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
-import ProjectTasksGrid from "../components/ProjectTasks";
+import ProjectTasks from "../components/ProjectTasks";
 import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
 
 const ProjectsEditPage = () => {
@@ -62,8 +62,9 @@ const ProjectsEditPage = () => {
       ]}
       onBack={() => navigate("/projects")}
     >
-      <ProjectTasksGrid tasks={project?.tasks || []} fetching={fetching}>
-        {project && (
+      {fetching && <Progress size="xs" isIndeterminate />}
+      {project && (
+        <ProjectTasks project={project}>
           <ProjectsForm
             scope={
               user?.category?.role === UserRole.COLLABORATOR
@@ -73,8 +74,8 @@ const ProjectsEditPage = () => {
             onSubmit={update}
             defaultValues={project as ProjectsFormValues}
           />
-        )}
-      </ProjectTasksGrid>
+        </ProjectTasks>
+      )}
     </PageContainer>
   );
 };

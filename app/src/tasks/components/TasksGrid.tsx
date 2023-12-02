@@ -33,18 +33,24 @@ type TasksGridProps = {
   tasks: Task[];
   fetching: boolean;
   onEdit: (task: Task, tab?: "details" | "executions") => void;
+  onRefetch: () => void;
 };
 
-const TasksGrid: React.FC<TasksGridProps> = ({ tasks, fetching, onEdit }) => {
+const TasksGrid: React.FC<TasksGridProps> = ({
+  tasks,
+  fetching,
+  onEdit,
+  onRefetch,
+}) => {
   const { user } = useContext(AuthContext);
+
+  const queryClient = useQueryClient();
 
   const { clockIn, clockOut } = useContext(FakeStorageContext);
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const toast = useToast();
-
-  const queryClient = useQueryClient();
 
   const { mutateAsync: punchClock, isPending: punching } = useMutation({
     mutationFn: async (type: PunchType) => {
@@ -62,11 +68,15 @@ const TasksGrid: React.FC<TasksGridProps> = ({ tasks, fetching, onEdit }) => {
         status: "success",
       });
 
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
-
       setSelectedTask(null);
 
+      onRefetch();
+
       onEdit(selectedTask as Task, "executions");
+
+      queryClient.invalidateQueries({
+        queryKey: ["task-executions", { id: selectedTask?.id as string }],
+      });
     },
     onError: (error) => {
       toast({
