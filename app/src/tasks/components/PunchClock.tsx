@@ -2,14 +2,16 @@ import {
   Box,
   Button,
   Flex,
+  FormControl,
   HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Stack,
+  Textarea,
 } from "@chakra-ui/react";
 import moment from "moment";
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FaClock } from "react-icons/fa";
 import { FiArrowRight } from "react-icons/fi";
 import { TbClockCheck } from "react-icons/tb";
@@ -24,7 +26,7 @@ export enum PunchType {
 type PunchClockProps = {
   task: Task;
   punching: boolean;
-  onPunch: (type: PunchType) => void;
+  onPunch: ({ type, details }: { type: PunchType; details?: string }) => void;
   onCancel: () => void;
 };
 
@@ -50,6 +52,12 @@ const PunchClock: React.FC<PunchClockProps> = ({
     () => (execution ? PunchType.CLOCK_OUT : PunchType.CLOCK_IN),
     [execution]
   );
+
+  const [details, setDetails] = useState<string>();
+
+  useEffect(() => {
+    setDetails(execution?.details);
+  }, [execution]);
 
   return (
     <Stack>
@@ -88,13 +96,23 @@ const PunchClock: React.FC<PunchClockProps> = ({
           />
         </InputGroup>
       </Flex>
+      <FormControl>
+        <Textarea
+          resize={"none"}
+          defaultValue={execution?.details}
+          fontSize="sm"
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder="Details"
+        />
+      </FormControl>
       <HStack justifyContent="flex-end" my={1}>
         <Button variant="outline" onClick={onCancel} size={"sm"}>
           Cancel
         </Button>
         <Button
           colorScheme={type === PunchType.CLOCK_IN ? "blue" : "red"}
-          onClick={() => onPunch(type)}
+          onClick={() => onPunch({ type, details })}
           size={"sm"}
           isLoading={punching}
         >

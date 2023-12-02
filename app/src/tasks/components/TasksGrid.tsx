@@ -53,12 +53,18 @@ const TasksGrid: React.FC<TasksGridProps> = ({
   const toast = useToast();
 
   const { mutateAsync: punchClock, isPending: punching } = useMutation({
-    mutationFn: async (type: PunchType) => {
+    mutationFn: async ({
+      type,
+      details,
+    }: {
+      type: PunchType;
+      details?: string;
+    }) => {
       if (type === PunchType.CLOCK_IN) {
-        await clockIn(selectedTask?.id as string);
+        await clockIn(selectedTask?.id as string, details || "");
       }
       if (type === PunchType.CLOCK_OUT) {
-        await clockOut(selectedTask?.id as string);
+        await clockOut(selectedTask?.id as string, details || "");
       }
     },
     onSuccess: () => {
