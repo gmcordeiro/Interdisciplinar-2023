@@ -2,6 +2,7 @@ package com.api.domain.project
 
 import com.api.domain.task.Task
 import com.api.domain.user.User
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -18,7 +19,7 @@ class Project (
 	val goal: String,
 	val resources: String,
 	val done: Boolean,
-	@OneToMany
+	@OneToMany(mappedBy = "project", cascade = [CascadeType.REMOVE])
 	val tasks: List<Task>,
 	@ManyToOne
 	val type: ProjectType,

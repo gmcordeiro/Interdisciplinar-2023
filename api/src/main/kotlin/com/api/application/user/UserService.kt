@@ -33,7 +33,7 @@ class UserService (
 
 
     fun insert (user: UserRequest): UserQuery? {
-        val userCommand = getCommand(user, true)
+        val userCommand = getCommand(user)
         val userDomain = userCommand.toUser()
         userRepository.save(userDomain)
         val insertUser = findByEmail(user.email)
@@ -46,7 +46,7 @@ class UserService (
             val userDomain = findByEmail(userOld.email) ?: throw UserNotFoundException(userID = userID)
             user.password = userDomain.password
         }
-        val userCommand = getCommand(user, false)
+        val userCommand = getCommand(user)
         val userDomain = userCommand.toUser(userOld.id)
         userRepository.save(userDomain)
         val updateUser = findByEmail(user.email)
@@ -63,7 +63,7 @@ class UserService (
         return false
     }
 
-    fun getCommand(user: UserRequest, crete: Boolean): UserCommand{
+    fun getCommand(user: UserRequest): UserCommand{
         val category = userCategoryRepository.findById(user.category).get()
         return user.toCommand(category)
     }
