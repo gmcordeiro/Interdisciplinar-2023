@@ -1,5 +1,6 @@
 package com.api.domain.task
 
+import com.api.domain.project.Project
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GenerationType
@@ -16,7 +17,9 @@ class Task (
 	val description: String,
 	val done: Boolean,
 	@ManyToOne
+	val project: Project,
+	@ManyToOne
 	val dependsOn: Task? = null,
 	@OneToMany(mappedBy = "task", cascade = [CascadeType.REMOVE])
-	val executions: List<TaskExecution>
+	val executions: List<TaskExecution>?
 )

@@ -8,6 +8,6 @@ import jakarta.persistence.Id
 @Entity
 class ProjectType(
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	val id: Int,
+	val id: Long? = null,
 	val name: String
 )

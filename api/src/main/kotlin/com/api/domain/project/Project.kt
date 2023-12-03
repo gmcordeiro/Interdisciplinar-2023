@@ -12,7 +12,7 @@ import jakarta.persistence.OneToMany
 @Entity
 class Project (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-	val id: Int,
+	val id: Long? = null,
 	val name: String,
 	val description: String,
 	val goal: String,
