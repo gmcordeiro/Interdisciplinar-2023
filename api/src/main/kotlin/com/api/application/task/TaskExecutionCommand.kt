@@ -8,6 +8,7 @@ import java.util.Date
 data class TaskExecutionCommand (
 	val startedAt: Date,
 	val finishedAt: Date,
+	val details: String,
 	val user: User,
 	val task: Task
 )
@@ -15,6 +16,7 @@ data class TaskExecutionCommand (
 data class TaskExecutionRequest(
 	val startedAt: Date,
 	val finishedAt: Date,
+	val details: String,
 	val user: Long,
 	val task: Long
 )
@@ -22,6 +24,7 @@ data class TaskExecutionRequest(
 fun TaskExecutionRequest.toCommand(user: User, task: Task) = TaskExecutionCommand(
 	startedAt = startedAt,
 	finishedAt = finishedAt,
+	details = details,
 	user = user,
 	task = task
 )
@@ -29,6 +32,7 @@ fun TaskExecutionRequest.toCommand(user: User, task: Task) = TaskExecutionComman
 fun TaskExecutionCommand.toTaskExecution() = TaskExecution (
 	startedAt = startedAt,
 	finishedAt = finishedAt,
+	details = details,
 	user = user,
 	task = task
 )
@@ -37,6 +41,7 @@ fun TaskExecutionCommand.toTaskExecution(executionId: Long) = TaskExecution (
 	id = executionId,
 	startedAt = startedAt,
 	finishedAt = finishedAt,
+	details = details,
 	user = user,
 	task = task
 )
