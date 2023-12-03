@@ -10,12 +10,12 @@ data class UserCommand(
 	var password: String,
 	val rg: String,
 	val cpf: String,
-	val telefone: String,
+	val phone: String,
 	val father: String,
 	val mother: String,
 	val academic: Boolean,
 	val ra: String,
-	val curse: String,
+	val course: String,
 	val period: String
 )
 
@@ -26,12 +26,12 @@ data class UserRequest(
 	var password: String,
 	val rg: String,
 	val cpf: String,
-	val telefone: String,
+	val phone: String,
 	val father: String,
 	val mother: String,
 	val academic: Boolean,
 	val ra: String,
-	val curse: String,
+	val course: String,
 	val period: String
 )
 
@@ -42,12 +42,12 @@ fun UserRequest.toCommand(category: UserCategory) = UserCommand(
 	password = password,
 	rg = rg,
 	cpf = cpf,
-	telefone = telefone,
+	phone = phone,
 	father = father,
 	mother = mother,
 	academic = academic,
 	ra = ra,
-	curse = curse,
+	course = course,
 	period = period
 )
 
@@ -58,12 +58,12 @@ fun UserCommand.toUser() = User (
 	password = password,
 	rg = rg,
 	cpf = cpf,
-	telefone = telefone,
+	phone = phone,
 	father = father,
 	mother = mother,
 	academic = academic,
 	ra = ra,
-	curse = curse,
+	course = course,
 	period = period
 )
 
@@ -75,11 +75,11 @@ fun UserCommand.toUser(userID: Long?) = User (
 	password = password,
 	rg = rg,
 	cpf = cpf,
-	telefone = telefone,
+	phone = phone,
 	father = father,
 	mother = mother,
 	academic = academic,
 	ra = ra,
-	curse = curse,
+	course = course,
 	period = period
 )
