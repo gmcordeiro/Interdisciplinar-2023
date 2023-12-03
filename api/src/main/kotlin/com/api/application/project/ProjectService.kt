@@ -4,6 +4,7 @@ import com.api.application.project.exceptions.ProjectNotFoundException
 import com.api.domain.project.Project
 import com.api.domain.project.ProjectRepository
 import com.api.domain.project.ProjectTypeRepository
+import com.api.domain.project.toProjectQuery
 import com.api.domain.task.TaskRepository
 import com.api.domain.user.UserRepository
 import org.springframework.http.ResponseEntity
@@ -16,8 +17,14 @@ class ProjectService(
 	private val projectTypeRepository: ProjectTypeRepository,
 	private val userRepository: UserRepository
 ) {
-	fun findAll(): List<Project> {
-		return projectRepository.findAll()
+	fun findAll(): List<ProjectQuery> {
+		val listProjectQuery: ArrayList<ProjectQuery> = arrayListOf()
+		val projectList = projectRepository.findAll()
+		for (project in projectList){
+			val projectQuery = project.toProjectQuery(false)
+			listProjectQuery.add(projectQuery)
+		}
+		return listProjectQuery
 	}
 	fun findById(projectId: Long): Project?{
 		return projectRepository.findById(projectId).get()

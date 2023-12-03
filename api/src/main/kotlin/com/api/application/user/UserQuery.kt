@@ -18,19 +18,3 @@ data class UserQuery(
 	val course: String,
 	val period: String
 )
-
-fun UserQuery.fromUser(user: User) = UserQuery(
-	id = id,
-	name = name,
-	email = email,
-	category = category,
-	rg = rg,
-	cpf = cpf,
-	phone = phone,
-	father = father,
-	mother = mother,
-	academic = academic,
-	ra = ra,
-	course = course,
-	period = period
-)
