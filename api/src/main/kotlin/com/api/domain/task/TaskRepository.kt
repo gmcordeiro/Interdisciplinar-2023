@@ -9,4 +9,5 @@ import java.util.*
 interface TaskRepository: JpaRepository <Task, Long> {
 	override fun findById(taskId: Long): Optional<Task>
 	fun findAllByProject(project: Project): List<Task>
+	fun findByProjectIdAndId(projectId: Long, taskId: Long): Optional<Task>
 }

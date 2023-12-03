@@ -3,6 +3,7 @@ package com.api.application.task
 import com.api.application.project.ProjectService
 import com.api.application.project.exceptions.ProjectNotFoundException
 import com.api.application.task.exceptions.TaskNotFoundException
+import com.api.domain.project.ProjectRepository
 import com.api.domain.task.Task
 import com.api.domain.task.TaskRepository
 import com.api.domain.task.TeskExecutionRepository
@@ -12,15 +13,15 @@ import org.springframework.stereotype.Service
 class TaskService(
 	private val taskRepository: TaskRepository,
 	private val taskExecutionRepository: TeskExecutionRepository,
-	private val projectService: ProjectService
+	private val projectRepository: ProjectRepository
 ) {
-	fun findAll(): List<Task>{
-		return taskRepository.findAll()
+	fun findAllByProject(projectId: Long): List<Task>{
+		val project = projectRepository.findById(projectId).get()
+		return taskRepository.findAllByProject(project)
 	}
 
-	fun findAllByProject(projectId: Long): List<Task>{
-		val project = projectService.findById(projectId) ?: throw ProjectNotFoundException(projectId)
-		return taskRepository.findAllByProject(project)
+	fun findByProjectIdAndId(projectId: Long, taskId: Long): Task? {
+		return taskRepository.findByProjectIdAndId(projectId, taskId).get()
 	}
 
 	fun findById(taskId: Long): Task? {
@@ -46,7 +47,7 @@ class TaskService(
 
 	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long): TaskCommand {
 		val taskDomain = taskRepository.findById(task.dependsOn).get()
-		val projectDomain = projectService.findById(task.project) ?: throw ProjectNotFoundException(task.project)
+		val projectDomain = projectRepository.findById(task.project).get()
 		val execution = if(create) listOf() else taskExecutionRepository.findAllByTaskId(taskId)
 
 		return task.toCommand(projectDomain, taskDomain, execution)

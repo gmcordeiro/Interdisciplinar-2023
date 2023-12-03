@@ -4,6 +4,6 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class TeskExececutionController(
-	private val taskExecutionHandler: TaskExecutionHandler
+	private val tesExecutionHandler: TaskExecutionHandler
 ) {
 }
