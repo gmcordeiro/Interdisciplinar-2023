@@ -23,12 +23,12 @@ class ProjectService(
 		return projectRepository.findById(projectId).get()
 	}
 	fun insert(projectRequest: ProjectRequest): Project? {
-		val projectCommand = getCommand(projectRequest, true, 0)
+		val projectCommand = getCommand(projectRequest, true, 0)  ?: throw ProjectNotFoundException(0)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
 	fun update(projectRequest: ProjectRequest, projectId: Long): Project?{
-		val projectCommand = getCommand(projectRequest, false, projectId)
+		val projectCommand = getCommand(projectRequest, false, projectId) ?: throw ProjectNotFoundException(projectId)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
@@ -42,13 +42,14 @@ class ProjectService(
 		projectRepository.save(project)
 		return true
 	}
-	fun getCommand(projectRequest: ProjectRequest, create: Boolean, projectId: Long): ProjectCommand{
-		val projectDomain = projectRepository.findById(projectId).get()
+	fun getCommand(projectRequest: ProjectRequest, create: Boolean, projectId: Long): ProjectCommand? {
+
+		val projectDomain = if(create) null else projectRepository.findById(projectId).get()
 
 		val owner = userRepository.findById(projectRequest.owner).get()
 		val projectType = projectTypeRepository.findById(projectRequest.type).get()
-		val tasks = if(create) listOf() else taskRepository.findAllByProject(projectDomain)
+		val tasks = if(create) listOf() else projectDomain?.let { taskRepository.findAllByProject(it) }
 
-		return projectRequest.toCommand(tasks, projectType, owner)
+		return tasks?.let { projectRequest.toCommand(it, projectType, owner) }
 	}
 }

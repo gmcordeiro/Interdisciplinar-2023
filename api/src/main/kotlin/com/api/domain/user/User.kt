@@ -23,20 +23,19 @@ class User(
 	val course: String,
 	val period: String
 )
-fun User.toUserQuery() = id?.let {
-	UserQuery(
-		id = it,
-		name = name,
-		email = email,
-		category = category,
-		rg = rg,
-		cpf = cpf,
-		phone = phone,
-		father = father,
-		mother = mother,
-		academic = academic,
-		ra = ra,
-		course = course,
-		period = period
-	)
-}
+fun User.toUserQuery() = UserQuery(
+	id = id,
+	name = name,
+	email = email,
+	category = category,
+	rg = rg,
+	cpf = cpf,
+	phone = phone,
+	father = father,
+	mother = mother,
+	academic = academic,
+	ra = ra,
+	course = course,
+	period = period
+)
+

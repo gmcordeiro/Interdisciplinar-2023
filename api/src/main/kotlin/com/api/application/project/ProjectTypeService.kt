@@ -15,7 +15,8 @@ class ProjectTypeService(
 		return projectTypeRepository.findById(typeId).get()
 	}
 	fun insert(projectTypeCommand: ProjectTypeCommand): ProjectType? {
-		val type = projectTypeRepository.save(projectTypeCommand.toProjectType())
+		val projectTypeDomain = projectTypeCommand.toProjectType()
+		val type = projectTypeRepository.save(projectTypeDomain)
 		return type.id?.let { findById(it) }
 	}
 	fun update(projectTypeCommand: ProjectTypeCommand, typeId: Long): ProjectType? {

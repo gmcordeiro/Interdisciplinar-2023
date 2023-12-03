@@ -33,7 +33,7 @@ class UserController(
     }
 
     @DeleteMapping("/users/{userID}")
-    fun dalete(@PathVariable userID: Long): ResponseEntity<Boolean>{
+    fun delete(@PathVariable userID: Long): ResponseEntity<Boolean>{
         return userHandler.delete(userID)
     }
 

@@ -11,13 +11,11 @@ class UserService (
     private val userCategoryRepository: UserCategoryRepository
 ) {
     fun findAll(): List<UserQuery> {
-        val listUserQuery: ArrayList<UserQuery> = ArrayList()
-        val userList: List<User> = userRepository.findAll()
+        val listUserQuery: ArrayList<UserQuery> = arrayListOf()
+        val userList = userRepository.findAll()
         for (user in userList){
             val userQuery = user.toUserQuery()
-            if (userQuery != null) {
-                listUserQuery.add(userQuery)
-            }
+            listUserQuery.add(userQuery)
         }
         return listUserQuery
     }
