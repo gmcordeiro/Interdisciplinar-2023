@@ -34,7 +34,7 @@ const UsersGrid: React.FC = () => {
     },
   });
 
-  const [deletedID, setDeletedID] = useState<number | null>(null);
+  const [deletedID, setDeletedID] = useState<number | undefined>(undefined);
 
   const navigate = useNavigate();
 
@@ -85,6 +85,9 @@ const UsersGrid: React.FC = () => {
                     colorScheme="red"
                     isLoading={removing && deletedID === user.id}
                     onClick={() => {
+                      if (!user.id) {
+                        return;
+                      }
                       setDeletedID(user.id);
                       remove(user.id);
                     }}

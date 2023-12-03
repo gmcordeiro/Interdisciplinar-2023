@@ -4,8 +4,20 @@ export type GetUsersPayload = User[];
 
 export type GetUserPayload = User;
 
-export type UserFormValues = Omit<User, "category"> & {
+export type UserFormValues = {
+  name: string;
+  email: string;
   category: number;
+  rg: string;
+  cpf: string;
+  phone: string;
+  mother: string;
+  father: string;
+  academic: boolean;
+  ra?: string;
+  course?: string;
+  period?: string;
+  password?: string;
 };
 
 export type UpdateUserInput = {

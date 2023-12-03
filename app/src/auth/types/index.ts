@@ -11,11 +11,20 @@ export type UserCategory = {
 };
 
 export type User = {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   category: UserCategory;
-  password?: string;
+  rg: string;
+  cpf: string;
+  phone: string;
+  mother: string;
+  father: string;
+  academic: boolean;
+  ra: string;
+  course: string;
+  period: string;
+  password: string;
   token?: string;
 };
 

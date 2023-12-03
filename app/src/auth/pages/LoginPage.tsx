@@ -10,10 +10,12 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import { AuthContext } from "../contexts/AuthContext";
 import { login } from "../services";
 import { LoginUserInput } from "../types";
@@ -21,11 +23,22 @@ import { LoginUserInput } from "../types";
 const LoginPage: React.FC = () => {
   const { authenticate } = useContext(AuthContext);
 
+  const schema = yup.object().shape({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginUserInput>();
+  } = useForm<LoginUserInput>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const toast = useToast();
 
@@ -60,7 +73,7 @@ const LoginPage: React.FC = () => {
       <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" mb={6}>
         Interdisciplinar
       </Text>
-      <form onSubmit={handleSubmit(mutateAsync)}>
+      <form onSubmit={handleSubmit((values) => mutateAsync(values))}>
         <Stack spacing={4}>
           <FormControl isInvalid={!!errors.email}>
             <FormLabel htmlFor="email">Email</FormLabel>
