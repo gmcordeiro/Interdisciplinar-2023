@@ -4,6 +4,7 @@ import com.api.application.user.exceptions.UserNotFoundException
 import com.api.domain.user.User
 import com.api.domain.user.UserRepository
 import com.api.domain.user.toUserQuery
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -27,8 +28,8 @@ class UserService (
     }
 
     fun findByID(userID: Long): UserQuery? {
-        val user = userRepository.findByID(userID)
-        return user?.toUserQuery() ?: throw UserNotFoundException(userID = userID)
+        val user = userRepository.findById(userID).get()
+        return user.toUserQuery() ?: throw UserNotFoundException(userID = userID)
     }
 
 
@@ -39,12 +40,22 @@ class UserService (
         return insertUser?.toUserQuery()
     }
 
-    fun update (user: UserCommand, userEmail: String): UserQuery? {
-        val userOld = findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
+    fun update (user: UserCommand, userID: Long): UserQuery? {
+        val userOld = findByID(userID) ?: throw UserNotFoundException(userID = userID)
         val userDomain = user.toUser(userOld.id)
         userRepository.save(userDomain)
         val updateUser = findByEmail(user.email)
         return updateUser?.toUserQuery()
+    }
+
+    fun delete(userID: Long): Boolean {
+        val userQuery = findByID(userID)
+        val user = userQuery?.let { findByEmail(it.email) }
+        if (user != null){
+            userRepository.delete(user)
+            return true
+        }
+        return false
     }
 
 }

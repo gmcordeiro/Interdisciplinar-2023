@@ -1,6 +1,7 @@
 package com.api.adapters.security.request
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
+
 
 @Serializable
 data class Credentials(

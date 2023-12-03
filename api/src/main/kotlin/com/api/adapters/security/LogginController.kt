@@ -19,12 +19,11 @@ class LogginController (
 	@PostMapping("/auth/login")
 	fun auth(@RequestBody credentials: Credentials): ResponseEntity<Token> {
 		val user = userService.findByEmail(credentials.email) ?: throw InvalidcredentialsExceptions()
-		if (encoderPassword.matches(credentials.password, user.password)){
+
+		if (encoderPassword.matches(encoderPassword.encode(credentials.password), user.password)){
 			throw InvalidcredentialsExceptions()
 		}
-
 		val accessToken = jwtUtil.generateToken(user) ?: throw InvalidcredentialsExceptions()
-
 		return ResponseEntity.ok(Token(accessToken))
 	}
 }

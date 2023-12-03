@@ -5,6 +5,12 @@ spring:
     url: jdbc:mysql://142.93.229.183:3306/tetinha?useTimezone=true&serverTimezone=UTC
     username: tetinha
     password: 8pj6}CFx58*
-
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
 jwt:
   secret: NKPEGPpS07WHHWxglBS6LIc055H5mO1s3meqeDMJbLW/v6uODN/aHXFnBN0BumhGVJEPURlhEAXpyJwBHLy2Jg==

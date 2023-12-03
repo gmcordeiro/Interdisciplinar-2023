@@ -2,14 +2,14 @@ package com.api.domain.task
 
 import com.api.domain.user.User
 import jakarta.persistence.*
-import java.time.LocalDateTime
+import java.util.Date
 
 @Entity
 class TaskExecution (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Int,
-	val startedAt: LocalDateTime,
-	val finishedAt: LocalDateTime,
+	val startedAt: Date,
+	val finishedAt: Date,
 	@ManyToOne
 	val user: User,
 	@ManyToOne

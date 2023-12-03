@@ -6,8 +6,22 @@ import com.api.domain.user.UserCategory
 data class UserCommand(
 	val name: String,
 	val email: String,
-	val category: UserCategory,
+	var category: UserCategory,
 	val password: String
+)
+
+data class UserCreatedRequest(
+	val name: String,
+	val email: String,
+	var category: Long,
+	var password: String
+)
+
+fun UserCreatedRequest.toCommand(category: UserCategory) = UserCommand(
+	name = name,
+	email = email,
+	category = category,
+	password = password
 )
 
 fun UserCommand.toUser() = User (
