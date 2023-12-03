@@ -1,4 +1,4 @@
-package com.api.adapters.security.exceptions
+package com.api.adapters.http.security.exceptions
 
 
 import com.api.adapters.http.error.ErrorResponse

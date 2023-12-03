@@ -1,4 +1,4 @@
-package com.api.adapters.security
+package com.api.adapters.http.security
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

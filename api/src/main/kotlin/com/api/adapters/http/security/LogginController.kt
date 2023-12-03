@@ -1,8 +1,8 @@
-package com.api.adapters.security
+package com.api.adapters.http.security
 
-import com.api.adapters.security.exceptions.InvalidcredentialsExceptions
-import com.api.adapters.security.request.Credentials
-import com.api.adapters.security.response.Token
+import com.api.adapters.http.security.exceptions.InvalidcredentialsExceptions
+import com.api.adapters.http.security.request.Credentials
+import com.api.adapters.http.security.response.Token
 import com.api.application.user.EncoderPassword
 import com.api.application.user.UserService
 import org.springframework.http.ResponseEntity

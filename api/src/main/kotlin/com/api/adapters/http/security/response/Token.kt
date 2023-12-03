@@ -1,4 +1,4 @@
-package com.api.adapters.security.response
+package com.api.adapters.http.security.response
 
 import kotlinx.serialization.Serializable
 

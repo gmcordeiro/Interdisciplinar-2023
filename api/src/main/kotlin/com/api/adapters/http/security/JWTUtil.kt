@@ -1,4 +1,4 @@
-package com.api.adapters.security
+package com.api.adapters.http.security
 
 import com.api.application.user.UserService
 import com.api.domain.user.User

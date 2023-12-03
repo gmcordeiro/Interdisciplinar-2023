@@ -1,6 +1,6 @@
-package com.api.adapters.security
+package com.api.adapters.http.security
 
-import com.api.adapters.security.exceptions.CurstomEntryPoint
+import com.api.adapters.http.security.exceptions.CurstomEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
