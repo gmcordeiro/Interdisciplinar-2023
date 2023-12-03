@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class UserController(
     private val userHandler: UserHandler,
-    private val userCategoryService: UserCategoryService,
     private val encoderPassword: EncoderPassword
 ) {
     @GetMapping("/users")
@@ -23,15 +22,13 @@ class UserController(
     }
 
     @PostMapping("/users")
-    fun insert(@RequestBody user: UserCreatedRequest): ResponseEntity<UserQuery>{
+    fun insert(@RequestBody user: UserRequest): ResponseEntity<UserQuery>{
         user.password = encoderPassword.encode(user.password)
-        val category = userCategoryService.findByID(user.category) ?: throw UserCategoryNotFoundException(categoryID = user.category)
-        val userCommand = user.toCommand(category)
-        return userHandler.insert(userCommand)
+        return userHandler.insert(user)
     }
 
     @PutMapping("/users/{userID}")
-    fun update(@RequestBody user: UserCommand, @PathVariable userID: Long): ResponseEntity<UserQuery>{
+    fun update(@RequestBody user: UserRequest, @PathVariable userID: Long): ResponseEntity<UserQuery>{
         return userHandler.update(user, userID)
     }
 

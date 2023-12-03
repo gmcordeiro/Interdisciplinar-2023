@@ -1,15 +1,14 @@
 package com.api.application.user
 
 import com.api.application.user.exceptions.UserNotFoundException
-import com.api.domain.user.User
-import com.api.domain.user.UserRepository
-import com.api.domain.user.toUserQuery
+import com.api.domain.user.*
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
 class UserService (
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userCategoryRepository: UserCategoryRepository
 ) {
     fun findAll(): List<UserQuery> {
         val listUserQuery: ArrayList<UserQuery> = ArrayList()
@@ -33,20 +32,22 @@ class UserService (
     }
 
 
-    fun insert (user: UserCommand): UserQuery? {
-        val userDomain = user.toUser()
+    fun insert (user: UserRequest): UserQuery? {
+        val userCommand = getCommand(user, true)
+        val userDomain = userCommand.toUser()
         userRepository.save(userDomain)
         val insertUser = findByEmail(user.email)
         return insertUser?.toUserQuery()
     }
 
-    fun update (user: UserCommand, userID: Long): UserQuery? {
+    fun update (user: UserRequest, userID: Long): UserQuery? {
         val userOld = findByID(userID) ?: throw UserNotFoundException(userID = userID)
         if(user.password.isEmpty()){
             val userDomain = findByEmail(userOld.email) ?: throw UserNotFoundException(userID = userID)
             user.password = userDomain.password
         }
-        val userDomain = user.toUser(userOld.id)
+        val userCommand = getCommand(user, false)
+        val userDomain = userCommand.toUser(userOld.id)
         userRepository.save(userDomain)
         val updateUser = findByEmail(user.email)
         return updateUser?.toUserQuery()
@@ -60,6 +61,11 @@ class UserService (
             return true
         }
         return false
+    }
+
+    fun getCommand(user: UserRequest, crete: Boolean): UserCommand{
+        val category = userCategoryRepository.findById(user.category).get()
+        return user.toCommand(category)
     }
 
 }

@@ -3,6 +3,7 @@ package com.api.adapters.http.user
 import com.api.application.user.UserCommand
 import com.api.application.user.UserService
 import com.api.application.user.UserQuery
+import com.api.application.user.UserRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Component
@@ -20,12 +21,12 @@ class UserHandler (
 		return ResponseEntity.ok(user)
 	}
 
-	fun insert(user: UserCommand): ResponseEntity<UserQuery> {
+	fun insert(user: UserRequest): ResponseEntity<UserQuery> {
 		val userQuery = userService.insert(user)
 		return ResponseEntity.status(HttpStatus.CREATED).body(userQuery)
 	}
 
-	fun update(user: UserCommand, userID: Long): ResponseEntity<UserQuery>{
+	fun update(user: UserRequest, userID: Long): ResponseEntity<UserQuery>{
 		val userQuery = userService.update(user, userID)
 		return ResponseEntity.status(HttpStatus.OK).body(userQuery)
 	}
