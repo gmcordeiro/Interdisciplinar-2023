@@ -1,9 +1,8 @@
-package com.api.adapters.http
+package com.api.adapters.http.user
 
 
 import com.api.application.user.*
 import com.api.application.user.exceptions.UserCategoryNotFoundException
-import com.api.domain.user.UserCategory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

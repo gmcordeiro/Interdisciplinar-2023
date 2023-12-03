@@ -43,13 +43,12 @@ class JWTUtil (
 			Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(jwt)
 			true
 		}catch (e: JwtException){
-			throw e;
+			throw e
 		}
 	}
 
 	fun getAuthentication(jwt: String?): Authentication {
 		val username = Jwts.parser().verifyWith(getSecretKey()).build().parseSignedClaims(jwt).payload.subject
-		val user = userService.findByEmail(username)
-		return UsernamePasswordAuthenticationToken(username, null, null/*aqui vamos passar a Role (UserCategory) para definir as permissões*/)
+		return UsernamePasswordAuthenticationToken(username, null, null)
 	}
 }

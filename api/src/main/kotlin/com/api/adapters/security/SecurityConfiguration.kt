@@ -15,9 +15,8 @@ class SecurityConfiguration(
 	@Bean
 	fun filterChain(http: HttpSecurity): SecurityFilterChain{
 		return http.authorizeHttpRequests {
-			it.requestMatchers("/login/**").permitAll()
-			it.requestMatchers("/users/**").permitAll()
-			it.anyRequest().permitAll()
+			it.requestMatchers("/auth/login/**").permitAll()
+			it.anyRequest().authenticated()
 		}.csrf{
 			it.disable()
 		}.addFilterBefore(JwsAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter::class.java)

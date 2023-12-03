@@ -1,4 +1,4 @@
-package com.api.adapters.http
+package com.api.adapters.http.user
 
 import com.api.application.user.UserCategoryCommand
 import com.api.application.user.UserCategoryService
