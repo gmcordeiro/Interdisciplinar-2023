@@ -15,12 +15,12 @@ class User(
 	val password: String,
 	val rg: String,
 	val cpf: String,
-	val telefone: String,
+	val phone: String,
 	val father: String,
 	val mother: String,
 	val academic: Boolean,
 	val ra: String,
-	val curse: String,
+	val course: String,
 	val period: String
 )
 fun User.toUserQuery() = id?.let {
@@ -28,6 +28,15 @@ fun User.toUserQuery() = id?.let {
 		id = it,
 		name = name,
 		email = email,
-		category = category
+		category = category,
+		rg = rg,
+		cpf = cpf,
+		phone = phone,
+		father = father,
+		mother = mother,
+		academic = academic,
+		ra = ra,
+		course = course,
+		period = period
 	)
 }

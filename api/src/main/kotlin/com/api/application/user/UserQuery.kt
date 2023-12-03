@@ -10,12 +10,12 @@ data class UserQuery(
     val category: UserCategory,
 	val rg: String,
 	val cpf: String,
-	val telefone: String,
+	val phone: String,
 	val father: String,
 	val mother: String,
 	val academic: Boolean,
 	val ra: String,
-	val curse: String,
+	val course: String,
 	val period: String
 )
 
@@ -26,11 +26,11 @@ fun UserQuery.fromUser(user: User) = UserQuery(
 	category = category,
 	rg = rg,
 	cpf = cpf,
-	telefone = telefone,
+	phone = phone,
 	father = father,
 	mother = mother,
 	academic = academic,
 	ra = ra,
-	curse = curse,
+	course = course,
 	period = period
 )
