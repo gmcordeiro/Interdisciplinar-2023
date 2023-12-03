@@ -29,6 +29,7 @@ class UserController(
 
     @PutMapping("/users/{userID}")
     fun update(@RequestBody user: UserRequest, @PathVariable userID: Long): ResponseEntity<UserQuery>{
+        user.password = encoderPassword.encode(user.password)
         return userHandler.update(user, userID)
     }
 
