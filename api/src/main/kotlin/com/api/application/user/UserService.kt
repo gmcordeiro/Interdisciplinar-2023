@@ -42,6 +42,10 @@ class UserService (
 
     fun update (user: UserCommand, userID: Long): UserQuery? {
         val userOld = findByID(userID) ?: throw UserNotFoundException(userID = userID)
+        if(user.password.isEmpty()){
+            val userDomain = findByEmail(userOld.email) ?: throw UserNotFoundException(userID = userID)
+            user.password = userDomain.password
+        }
         val userDomain = user.toUser(userOld.id)
         userRepository.save(userDomain)
         val updateUser = findByEmail(user.email)

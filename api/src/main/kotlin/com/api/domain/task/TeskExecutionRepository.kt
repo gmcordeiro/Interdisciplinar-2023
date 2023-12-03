@@ -7,5 +7,5 @@ import java.util.*
 @Repository
 interface TeskExecutionRepository: JpaRepository <TaskExecution, Long> {
 	override fun findById(executionId: Long): Optional<TaskExecution>
-	fun findAllByTask(task: Task): List<TaskExecution>
+	fun findAllByTaskId(taskId: Long): List<TaskExecution>
 }

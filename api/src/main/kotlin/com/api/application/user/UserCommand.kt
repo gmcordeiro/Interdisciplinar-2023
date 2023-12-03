@@ -7,7 +7,7 @@ data class UserCommand(
 	val name: String,
 	val email: String,
 	var category: UserCategory,
-	val password: String
+	var password: String
 )
 
 data class UserCreatedRequest(

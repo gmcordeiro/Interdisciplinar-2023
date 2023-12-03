@@ -4,14 +4,14 @@ import com.api.application.project.ProjectService
 import com.api.application.project.exceptions.ProjectNotFoundException
 import com.api.application.task.exceptions.TaskNotFoundException
 import com.api.domain.task.Task
-import com.api.domain.task.TaskExecution
 import com.api.domain.task.TaskRepository
+import com.api.domain.task.TeskExecutionRepository
 import org.springframework.stereotype.Service
 
 @Service
 class TaskService(
 	private val taskRepository: TaskRepository,
-	private val taskExecutionService: TaskExecutionService,
+	private val taskExecutionRepository: TeskExecutionRepository,
 	private val projectService: ProjectService
 ) {
 	fun findAll(): List<Task>{
@@ -48,8 +48,9 @@ class TaskService(
 
 	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long): TaskCommand {
 		val taskDomain = taskRepository.findById(task.dependsOn).get()
-		val execution = if(!create) listOf() else taskExecutionService.findAllByTask(taskId)
+		val projectDomain = projectService.findById(task.project) ?: throw ProjectNotFoundException(task.project)
+		val execution = if(!create) listOf() else taskExecutionRepository.findAllByTaskId(taskId)
 
-		return task.toCommand(taskDomain, execution)
+		return task.toCommand(projectDomain, taskDomain, execution)
 	}
 }

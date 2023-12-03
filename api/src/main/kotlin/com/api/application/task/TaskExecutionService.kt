@@ -17,8 +17,7 @@ class TaskExecutionService(
 		return taskExecutionRepository.findById(executionId).get()
 	}
 	fun findAllByTask(taskId: Long): List<TaskExecution>{
-		val task = taskService.findById(taskId) ?: throw TaskNotFoundException(taskID = taskId)
-		return taskExecutionRepository.findAllByTask(task)
+		return taskExecutionRepository.findAllByTaskId(taskId)
 	}
 
 	fun insert (execution: TaskExecutionRequest): TaskExecution? {
