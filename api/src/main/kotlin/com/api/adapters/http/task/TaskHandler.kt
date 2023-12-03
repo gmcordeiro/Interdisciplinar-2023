@@ -23,12 +23,12 @@ class TaskHandler(
 	}
 
 	fun insert(taskRequest: TaskRequest, projectId: Long): ResponseEntity<Task> {
-		val task = taskService.insert(taskRequest)
+		val task = taskService.insert(taskRequest, projectId)
 		return ResponseEntity.status(HttpStatus.CREATED).body(task)
 	}
 
 	fun update(taskRequest: TaskRequest, projectId: Long, taskId: Long): ResponseEntity<Task> {
-		val task = taskService.update(taskRequest, taskId)
+		val task = taskService.update(taskRequest, taskId, projectId)
 		return ResponseEntity.status(HttpStatus.OK).body(task)
 	}
 

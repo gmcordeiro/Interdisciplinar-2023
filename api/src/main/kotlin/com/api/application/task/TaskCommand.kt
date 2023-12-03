@@ -19,7 +19,6 @@ data class TaskRequest(
 	val name: String,
 	val description: String,
 	val done: Boolean,
-	val project: Long,
 	val dependsOn: Long
 )
 

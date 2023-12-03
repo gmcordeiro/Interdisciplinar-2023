@@ -28,14 +28,14 @@ class TaskService(
 		return taskRepository.findById(taskId).get()
 	}
 
-	fun insert(task: TaskRequest): Task?{
-		val taskCommand = getCommand(task, true, 0)
+	fun insert(task: TaskRequest, projectId: Long): Task?{
+		val taskCommand = getCommand(task, true, 0, projectId)
 		val taskDomain = taskRepository.save(taskCommand.toTaskExecution())
 		return taskDomain.id?.let { findById(it) }
 	}
 
-	fun update(task: TaskRequest, taskId: Long): Task?{
-		val taskCommand = getCommand(task, false, taskId)
+	fun update(task: TaskRequest, taskId: Long, projectId: Long): Task?{
+		val taskCommand = getCommand(task, false, taskId, projectId)
 		val taskDomain = taskRepository.save(taskCommand.toTaskExecution())
 		return taskDomain.id?.let { findById(it) }
 	}
@@ -45,9 +45,9 @@ class TaskService(
 		return !taskRepository.existsById(taskId)
 	}
 
-	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long): TaskCommand {
+	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long, projectId: Long): TaskCommand {
 		val taskDomain = taskRepository.findById(task.dependsOn).get()
-		val projectDomain = projectRepository.findById(task.project).get()
+		val projectDomain = projectRepository.findById(projectId).get()
 		val execution = if(create) listOf() else taskExecutionRepository.findAllByTaskId(taskId)
 
 		return task.toCommand(projectDomain, taskDomain, execution)
