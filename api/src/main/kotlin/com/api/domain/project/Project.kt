@@ -19,7 +19,7 @@ class Project (
 	val resources: String,
 	val done: Boolean,
 	@OneToMany
-	val task: List<Task>,
+	val tasks: List<Task>,
 	@ManyToOne
 	val type: ProjectType,
 	@ManyToOne

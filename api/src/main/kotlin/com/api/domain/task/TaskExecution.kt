@@ -10,6 +10,7 @@ class TaskExecution (
 	val id: Long? = null,
 	val startedAt: Date,
 	val finishedAt: Date,
+	val details: String,
 	@ManyToOne
 	val user: User,
 	@ManyToOne

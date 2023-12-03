@@ -20,8 +20,7 @@ data class TaskRequest(
 	val description: String,
 	val done: Boolean,
 	val project: Long,
-	val dependsOn: Long,
-	val execution: Long
+	val dependsOn: Long
 )
 
 fun TaskRequest.toCommand(project: Project, task: Task, executions: List<TaskExecution>) = TaskCommand(

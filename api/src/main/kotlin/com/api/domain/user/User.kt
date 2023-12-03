@@ -12,7 +12,16 @@ class User(
 	val email: String,
 	@ManyToOne
 	val category: UserCategory,
-	val password: String
+	val password: String,
+	val rg: String,
+	val cpf: String,
+	val telefone: String,
+	val father: String,
+	val mother: String,
+	val academic: Boolean,
+	val ra: String,
+	val curse: String,
+	val period: String
 )
 fun User.toUserQuery() = id?.let {
 	UserQuery(
