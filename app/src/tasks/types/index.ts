@@ -1,7 +1,7 @@
 import { User } from "../../auth/types";
 
 export type Task = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   done: boolean;
@@ -10,15 +10,20 @@ export type Task = {
 };
 
 export type TaskExecution = {
-  id: string;
+  id: number;
   startedAt: string;
   finishedAt: string;
   user: User;
   details: string;
 };
 
+export type ProjectType = {
+  id: number;
+  name: string;
+};
+
 export type Project = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   goal: string;
@@ -26,4 +31,19 @@ export type Project = {
   done: boolean;
   tasks: Task[];
   owner: User;
+  type: ProjectType;
 };
+
+export type FetchProjectsPayload = Omit<Project, "tasks">;
+
+export type ProjectFormValues = {
+  name: string;
+  description: string;
+  goal: string;
+  resources: string;
+  done: boolean;
+  owner: number;
+  type: number;
+};
+
+export type GetProjectPayload = Project;

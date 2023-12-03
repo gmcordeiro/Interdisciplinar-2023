@@ -8,7 +8,8 @@ import PageContainer from "../../common/components/PageContainer";
 import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
 import ProjectTasks from "../components/ProjectTasks";
-import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
+import ProjectsForm from "../components/ProjectsForm";
+import { ProjectFormValues } from "../types";
 
 const ProjectsEditPage = () => {
   const { getProject } = useContext(FakeStorageContext);
@@ -31,7 +32,7 @@ const ProjectsEditPage = () => {
   });
 
   const { mutateAsync: update } = useMutation({
-    mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
+    mutationFn: (values: ProjectFormValues) => Promise.resolve(values),
     onSuccess: () => {
       toast({
         title: "Update successful",
@@ -72,7 +73,7 @@ const ProjectsEditPage = () => {
                 : FormScope.EDIT
             }
             onSubmit={update}
-            defaultValues={project as ProjectsFormValues}
+            defaultValues={project as unknown as ProjectFormValues}
           />
         </ProjectTasks>
       )}

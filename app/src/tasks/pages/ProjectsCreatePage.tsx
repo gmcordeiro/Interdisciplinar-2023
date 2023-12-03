@@ -1,19 +1,25 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../auth/contexts/AuthContext";
 import PageContainer from "../../common/components/PageContainer";
 import { FormScope } from "../../common/types/form";
-import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
+import ProjectsForm from "../components/ProjectsForm";
+import { createProject } from "../services";
+import { ProjectFormValues } from "../types";
 
 const ProjectsCreatePage = () => {
   const navigate = useNavigate();
+
+  const { user } = useContext(AuthContext);
 
   const toast = useToast();
 
   const queryClient = useQueryClient();
 
   const { mutateAsync: create } = useMutation({
-    mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
+    mutationFn: (values: ProjectFormValues) => createProject(values),
     onSuccess: () => {
       toast({
         title: "Create successful",
@@ -40,7 +46,19 @@ const ProjectsCreatePage = () => {
       ]}
       onBack={() => navigate("/projects")}
     >
-      <ProjectsForm scope={FormScope.CREATE} onSubmit={create} />
+      <ProjectsForm
+        scope={FormScope.CREATE}
+        onSubmit={create}
+        defaultValues={{
+          description: "",
+          name: "",
+          done: false,
+          goal: "",
+          owner: user?.id as number,
+          resources: "",
+          type: 0,
+        }}
+      />
     </PageContainer>
   );
 };

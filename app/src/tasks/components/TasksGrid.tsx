@@ -62,10 +62,10 @@ const TasksGrid: React.FC<TasksGridProps> = ({
       details?: string;
     }) => {
       if (type === PunchType.CLOCK_IN) {
-        await clockIn(selectedTask?.id as string, details || "");
+        await clockIn("", details || "");
       }
       if (type === PunchType.CLOCK_OUT) {
-        await clockOut(selectedTask?.id as string, details || "");
+        await clockOut("", details || "");
       }
     },
     onSuccess: () => {
@@ -82,7 +82,7 @@ const TasksGrid: React.FC<TasksGridProps> = ({
       onEdit(selectedTask as Task, "executions");
 
       queryClient.invalidateQueries({
-        queryKey: ["task-executions", { id: selectedTask?.id as string }],
+        queryKey: ["task-executions", { id: "" }],
       });
     },
     onError: (error) => {

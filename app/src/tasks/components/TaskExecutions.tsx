@@ -19,7 +19,7 @@ const TaskExecutions: React.FC<TaskExecutionsProps> = ({
 
   const { data: executions, isLoading: fetching } = useQuery({
     queryKey: ["task-executions", { id: task.id }],
-    queryFn: () => getExecutions(task.id),
+    queryFn: () => getExecutions(task.id.toString()),
     initialData: [],
     enabled: !!task.id,
   });

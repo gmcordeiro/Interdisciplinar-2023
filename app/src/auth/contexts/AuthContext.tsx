@@ -26,9 +26,14 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const authenticated = useMemo(() => !!user, [user]);
 
+  const getUserFromToken = useCallback((token: string) => {
+    const user = jwtDecode<UserTokenPayload & { jti: number }>(token);
+    return { ...user, id: user.jti } as UserTokenPayload;
+  }, []);
+
   const authenticate = useCallback((token: string) => {
     try {
-      const user = jwtDecode<UserTokenPayload>(token);
+      const user = getUserFromToken(token);
       setUser(user);
       setInitialized(true);
       localStorage.setItem("token", token);
