@@ -7,7 +7,7 @@ import java.util.Date
 @Entity
 class TaskExecution (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-	val id: Int,
+	val id: Long? = null,
 	val startedAt: Date,
 	val finishedAt: Date,
 	@ManyToOne

@@ -1,18 +1,22 @@
 package com.api.domain.task
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GenerationType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToMany
 
 @Entity
 class Task (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-	val id: Int,
+	val id: Long? = null,
 	val name: String,
 	val description: String,
 	val done: Boolean,
 	@ManyToOne
-	val dependsOn: Task? = null
+	val dependsOn: Task? = null,
+	@OneToMany(mappedBy = "task", cascade = [CascadeType.REMOVE])
+	val executions: List<TaskExecution>
 )
