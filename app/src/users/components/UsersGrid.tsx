@@ -12,15 +12,13 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FiEdit, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { UserRoleColor } from "../../auth/contants/roles";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
+import { getUsers, removeUser } from "../services";
 
 const UsersGrid: React.FC = () => {
-  const { getUsers, removeUser } = useContext(FakeStorageContext);
-
   const queryClient = useQueryClient();
 
   const { data: users, isFetching: fetching } = useQuery({
@@ -36,7 +34,7 @@ const UsersGrid: React.FC = () => {
     },
   });
 
-  const [deletedID, setDeletedID] = useState<string | null>(null);
+  const [deletedID, setDeletedID] = useState<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -55,7 +53,7 @@ const UsersGrid: React.FC = () => {
         <Tbody>
           {fetching && (
             <Tr>
-              <Td colSpan={4}>
+              <Td colSpan={5}>
                 <Progress size="xs" isIndeterminate />
               </Td>
             </Tr>
@@ -66,8 +64,8 @@ const UsersGrid: React.FC = () => {
               <Td>{user.email}</Td>
               <Td>{user.category.name}</Td>
               <Td>
-                <Badge colorScheme={UserRoleColor[user.role]}>
-                  {user.role}
+                <Badge colorScheme={UserRoleColor[user.category.role]}>
+                  {user.category.role}
                 </Badge>
               </Td>
               <Td>

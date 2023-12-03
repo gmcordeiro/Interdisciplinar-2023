@@ -13,17 +13,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { UserRoleColor } from "../../auth/contants/roles";
-import { User } from "../../auth/types";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
-
-export type UserFormValues = Omit<User, "category"> & {
-  category: string;
-};
+import { getCategories } from "../services";
+import { UserFormValues } from "../types";
 
 type UsersFormProps = {
   scope: FormScope.CREATE | FormScope.EDIT;
@@ -36,8 +31,6 @@ const UsersForm: React.FC<UsersFormProps> = ({
   scope,
   onSubmit,
 }) => {
-  const { getCategories } = useContext(FakeStorageContext);
-
   const navigate = useNavigate();
 
   const { data: categories, isFetching: fetchingCategories } = useQuery({
@@ -48,6 +41,11 @@ const UsersForm: React.FC<UsersFormProps> = ({
 
   const form = useForm<UserFormValues>({
     defaultValues,
+  });
+
+  const password = useWatch({
+    control: form.control,
+    name: "password",
   });
 
   return (
@@ -80,10 +78,11 @@ const UsersForm: React.FC<UsersFormProps> = ({
           <Input
             type="text"
             id="password"
+            placeholder={scope === FormScope.EDIT ? "********" : "Password"}
             {...form.register("password", {
-              required: "Password is required",
+              required: scope === FormScope.CREATE,
               minLength: {
-                value: 5,
+                value: password || scope === FormScope.CREATE ? 5 : 0,
                 message: "Password must have at least 5 characters",
               },
             })}
@@ -107,16 +106,16 @@ const UsersForm: React.FC<UsersFormProps> = ({
             control={form.control}
             rules={{ required: "Category is required" }}
             render={({ field }) => (
-              <RadioGroup {...field}>
+              <RadioGroup {...field} value={field.value?.toString() || ""}>
                 <Stack>
                   {categories.map((category) => (
                     <Radio
                       key={category.id}
-                      value={category.id}
+                      value={category.id.toString()}
                       colorScheme={UserRoleColor[category.role]}
                       defaultChecked
                     >
-                      {category.name}{" "}
+                      {category.name}
                       <Badge ml={1} colorScheme={UserRoleColor[category.role]}>
                         {category.role}
                       </Badge>

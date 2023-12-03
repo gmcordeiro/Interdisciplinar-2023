@@ -14,7 +14,6 @@ import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import { login } from "../services";
 import { LoginUserInput } from "../types";
@@ -58,6 +57,9 @@ const LoginPage: React.FC = () => {
       borderWidth="1px"
       borderRadius="lg"
     >
+      <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" mb={6}>
+        Interdisciplinar
+      </Text>
       <form onSubmit={handleSubmit(mutateAsync)}>
         <Stack spacing={4}>
           <FormControl isInvalid={!!errors.email}>
@@ -84,12 +86,7 @@ const LoginPage: React.FC = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <VStack alignItems="flex-start" spacing={4}>
-            <Link to="/auth/register">
-              <Text fontSize="xs">
-                Don't have an account? <b>Register</b>
-              </Text>
-            </Link>
+          <VStack alignItems="flex-start" spacing={4} mt={2}>
             <Button
               w={"100%"}
               type="submit"

@@ -5,13 +5,13 @@ export enum UserRole {
 }
 
 export type UserCategory = {
-  id: string;
+  id: number;
   name: string;
   role: UserRole;
 };
 
 export type User = {
-  id: string;
+  id: number;
   name: string;
   email: string;
   category: UserCategory;
@@ -40,7 +40,7 @@ export type LoginUserPayload = {
 };
 
 export type UserTokenPayload = {
-  id: string;
+  id: number;
   sub: string;
   name: string;
   category: string;
