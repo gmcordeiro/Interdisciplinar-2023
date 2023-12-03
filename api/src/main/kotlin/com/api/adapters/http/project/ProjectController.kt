@@ -1,5 +1,6 @@
 package com.api.adapters.http.project
 
+import com.api.application.project.ProjectQuery
 import com.api.application.project.ProjectRequest
 import com.api.domain.project.Project
 import org.springframework.http.ResponseEntity
@@ -16,21 +17,21 @@ class ProjectController(
 	private val projectHandler: ProjectHandler
 ) {
 	@GetMapping("/projects")
-	fun findAll(): ResponseEntity<List<Project>>{
+	fun findAll(): ResponseEntity<List<ProjectQuery>>{
 		return projectHandler.findAll()
 	}
 	@GetMapping("/projects/{projectId}")
-	fun findById(@PathVariable projectId: Long): ResponseEntity<Project>{
+	fun findById(@PathVariable projectId: Long): ResponseEntity<ProjectQuery>{
 		return projectHandler.findById(projectId)
 	}
 
 	@PostMapping("/projects")
-	fun insert(@RequestBody projectRequest: ProjectRequest): ResponseEntity<Project>{
+	fun insert(@RequestBody projectRequest: ProjectRequest): ResponseEntity<ProjectQuery>{
 		return projectHandler.insert(projectRequest)
 	}
 
 	@PutMapping("/projects/{projectId}")
-	fun update(@RequestBody projectRequest: ProjectRequest, @PathVariable projectId: Long): ResponseEntity<Project>{
+	fun update(@RequestBody projectRequest: ProjectRequest, @PathVariable projectId: Long): ResponseEntity<ProjectQuery>{
 		return projectHandler.update(projectRequest, projectId)
 	}
 
