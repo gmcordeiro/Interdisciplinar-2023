@@ -15,13 +15,11 @@ import * as React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { AuthContext } from "../contexts/AuthContext";
+import { login } from "../services";
 import { LoginUserInput } from "../types";
 
 const LoginPage: React.FC = () => {
-  const { login } = useContext(FakeStorageContext);
-
   const { authenticate } = useContext(AuthContext);
 
   const {
@@ -34,17 +32,17 @@ const LoginPage: React.FC = () => {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: ({ user }) => {
+    onSuccess: ({ accessToken }) => {
       toast({
-        title: "Login successful",
+        title: "User authenticated successfully",
         status: "success",
       });
 
-      authenticate(user);
+      authenticate(accessToken);
     },
     onError: () => {
       toast({
-        title: "Login failed",
+        title: "Authentication failed",
         status: "error",
       });
     },

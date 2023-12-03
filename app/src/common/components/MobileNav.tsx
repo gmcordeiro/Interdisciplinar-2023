@@ -67,7 +67,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               <HStack>
                 <Avatar
                   size={"sm"}
-                  bg={UserRoleColor[user?.category?.role as UserRole]}
+                  bg={UserRoleColor[user?.role as UserRole]}
                   color="white"
                   name={user?.name}
                 />
@@ -79,9 +79,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   minW="60px"
                 >
                   <Text fontSize="sm">{user?.name}</Text>
-                  {user?.category?.role && (
-                    <Badge colorScheme={UserRoleColor[user?.category?.role]}>
-                      {user?.category?.role}
+                  {user?.role && (
+                    <Badge colorScheme={UserRoleColor[user?.role]}>
+                      {user?.role}
                     </Badge>
                   )}
                 </VStack>

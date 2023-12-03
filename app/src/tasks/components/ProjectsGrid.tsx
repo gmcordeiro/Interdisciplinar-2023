@@ -81,7 +81,7 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
                     }}
                   />
                   {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
-                    user?.category?.role as UserRole
+                    user?.role as UserRole
                   ) && (
                     <IconButton
                       icon={<FiTrash />}

@@ -147,43 +147,42 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                     size="sm"
                     onClick={() => onEdit(task)}
                   />
-                  {!task.done &&
-                    user?.category?.role === UserRole.COLLABORATOR && (
-                      <Popover
-                        placement="left-start"
-                        isOpen={selectedTask?.id === task.id}
-                        onClose={() => setSelectedTask(null)}
-                      >
-                        <PopoverTrigger>
-                          <IconButton
-                            icon={<FiClock />}
-                            aria-label={"on clock"}
-                            size="sm"
-                            colorScheme="blue"
-                            onClick={() => setSelectedTask(task)}
-                          />
-                        </PopoverTrigger>
-                        <PopoverContent width={popoverWidth}>
-                          <PopoverArrow />
-                          <PopoverHeader>Clock In/Out</PopoverHeader>
-                          <PopoverCloseButton />
-                          <PopoverBody>
-                            {task && (
-                              <PunchClock
-                                task={task}
-                                punching={punching}
-                                onPunch={punchClock}
-                                onCancel={() => {
-                                  setSelectedTask(null);
-                                }}
-                              />
-                            )}
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
-                    )}
+                  {!task.done && user?.role === UserRole.COLLABORATOR && (
+                    <Popover
+                      placement="left-start"
+                      isOpen={selectedTask?.id === task.id}
+                      onClose={() => setSelectedTask(null)}
+                    >
+                      <PopoverTrigger>
+                        <IconButton
+                          icon={<FiClock />}
+                          aria-label={"on clock"}
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => setSelectedTask(task)}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent width={popoverWidth}>
+                        <PopoverArrow />
+                        <PopoverHeader>Clock In/Out</PopoverHeader>
+                        <PopoverCloseButton />
+                        <PopoverBody>
+                          {task && (
+                            <PunchClock
+                              task={task}
+                              punching={punching}
+                              onPunch={punchClock}
+                              onCancel={() => {
+                                setSelectedTask(null);
+                              }}
+                            />
+                          )}
+                        </PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+                  )}
                   {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
-                    user?.category?.role as UserRole
+                    user?.role as UserRole
                   ) && (
                     <IconButton
                       icon={<FiTrash />}

@@ -67,7 +67,7 @@ const ProjectsEditPage = () => {
         <ProjectTasks project={project}>
           <ProjectsForm
             scope={
-              user?.category?.role === UserRole.COLLABORATOR
+              user?.role === UserRole.COLLABORATOR
                 ? FormScope.VIEW
                 : FormScope.EDIT
             }

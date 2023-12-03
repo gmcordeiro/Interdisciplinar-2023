@@ -66,8 +66,8 @@ const UsersGrid: React.FC = () => {
               <Td>{user.email}</Td>
               <Td>{user.category.name}</Td>
               <Td>
-                <Badge colorScheme={UserRoleColor[user.category.role]}>
-                  {user.category.role}
+                <Badge colorScheme={UserRoleColor[user.role]}>
+                  {user.role}
                 </Badge>
               </Td>
               <Td>

@@ -36,5 +36,13 @@ export type LoginUserInput = {
 };
 
 export type LoginUserPayload = {
-  user: User;
+  accessToken: string;
+};
+
+export type UserTokenPayload = {
+  id: string;
+  sub: string;
+  name: string;
+  category: string;
+  role: UserRole;
 };

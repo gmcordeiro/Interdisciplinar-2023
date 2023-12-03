@@ -23,7 +23,7 @@ const ProjectsPage: React.FC = () => {
   return (
     <PageContainer
       crumbs={[{ href: "/projects", label: "Projects", isCurrentPage: true }]}
-      {...(user?.category?.role === UserRole.COORDINATOR && {
+      {...(user?.role === UserRole.COORDINATOR && {
         onCreate: () => navigate("/projects/create"),
       })}
     >

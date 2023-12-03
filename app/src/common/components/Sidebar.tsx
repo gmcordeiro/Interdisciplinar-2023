@@ -64,8 +64,8 @@ const Sidebar = ({ onClose, ...rest }: SidebarProps) => {
       >
         {LinkItems.map(
           (link) =>
-            user?.category?.role &&
-            link.roles?.includes(user.category.role) && (
+            user?.role &&
+            link.roles?.includes(user.role) && (
               <NavItem key={link.name} icon={link.icon} href={link.href}>
                 {link.name}
               </NavItem>
