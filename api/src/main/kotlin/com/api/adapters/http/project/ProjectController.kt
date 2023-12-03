@@ -34,6 +34,11 @@ class ProjectController(
 		return projectHandler.update(projectRequest, projectId)
 	}
 
+	@PutMapping("/projects/{projectId}/finish")
+	fun finish(@PathVariable projectId: Long): ResponseEntity<Boolean>{
+		return projectHandler.done(projectId)
+	}
+
 	@DeleteMapping("/projects/{projectId}")
 	fun delete(@PathVariable projectId: Long): ResponseEntity<Boolean>{
 		return projectHandler.delete(projectId)

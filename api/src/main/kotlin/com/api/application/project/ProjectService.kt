@@ -19,28 +19,29 @@ class ProjectService(
 	fun findAll(): List<Project> {
 		return projectRepository.findAll()
 	}
-
 	fun findById(projectId: Long): Project?{
 		return projectRepository.findById(projectId).get()
 	}
-
 	fun insert(projectRequest: ProjectRequest): Project? {
 		val projectCommand = getCommand(projectRequest, true, 0)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
-
 	fun update(projectRequest: ProjectRequest, projectId: Long): Project?{
 		val projectCommand = getCommand(projectRequest, false, projectId)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
-
 	fun delete (projectId: Long): Boolean{
 		projectRepository.deleteById(projectId) ?: throw ProjectNotFoundException(projectId)
 		return !projectRepository.existsById(projectId)
 	}
-
+	fun done(projectId: Long): Boolean? {
+		val project = findById(projectId) ?: throw ProjectNotFoundException(projectId)
+		project.done = true
+		projectRepository.save(project)
+		return true
+	}
 	fun getCommand(projectRequest: ProjectRequest, create: Boolean, projectId: Long): ProjectCommand{
 		val projectDomain = projectRepository.findById(projectId).get()
 

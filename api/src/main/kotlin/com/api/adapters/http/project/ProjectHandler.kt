@@ -36,4 +36,9 @@ class ProjectHandler(
 		return ResponseEntity.ok(delete)
 	}
 
+	fun done(projectId: Long): ResponseEntity<Boolean> {
+		val project = projectService.done(projectId)
+		return ResponseEntity.ok(project)
+	}
+
 }

@@ -18,7 +18,7 @@ class Project (
 	val description: String,
 	val goal: String,
 	val resources: String,
-	val done: Boolean,
+	var done: Boolean,
 	@OneToMany(mappedBy = "project", cascade = [CascadeType.REMOVE])
 	val tasks: List<Task>,
 	@ManyToOne
