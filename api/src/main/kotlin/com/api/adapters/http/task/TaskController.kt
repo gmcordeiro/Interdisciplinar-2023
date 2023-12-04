@@ -42,4 +42,9 @@ class TaskController(
 		return taskHandler.delete(projectId, taskId)
 	}
 
+	@PutMapping("/projects/{projectId}/tasks/{taskId}/finish")
+	fun finish(@PathVariable projectId: Long, @PathVariable taskId: Long): ResponseEntity<Boolean>{
+		return taskHandler.done(taskId)
+	}
+
 }

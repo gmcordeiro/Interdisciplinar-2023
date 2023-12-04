@@ -37,5 +37,10 @@ class TaskHandler(
 		return ResponseEntity.ok(taskDeleted)
 	}
 
+	fun done(taskId: Long): ResponseEntity<Boolean> {
+		val task = taskService.done(taskId)
+		return ResponseEntity.ok(task)
+	}
+
 
 }

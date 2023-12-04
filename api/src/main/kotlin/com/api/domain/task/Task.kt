@@ -15,7 +15,7 @@ class Task (
 	val id: Long? = null,
 	val name: String,
 	val description: String,
-	val done: Boolean,
+	var done: Boolean,
 	@ManyToOne
 	val project: Project,
 	@ManyToOne

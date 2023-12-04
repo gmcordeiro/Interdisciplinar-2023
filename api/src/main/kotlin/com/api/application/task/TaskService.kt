@@ -52,4 +52,11 @@ class TaskService(
 
 		return task.toCommand(projectDomain, dependsOndTask, execution)
 	}
+
+	fun done(taskId: Long): Boolean? {
+		val task = findById(taskId) ?: throw TaskNotFoundException(taskId)
+		task.done = true
+		taskRepository.save(task)
+		return true
+	}
 }
