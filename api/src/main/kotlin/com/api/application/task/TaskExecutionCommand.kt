@@ -7,21 +7,17 @@ import java.util.Date
 
 data class TaskExecutionCommand (
 	val startedAt: Date,
-	val finishedAt: Date,
+	val finishedAt: Date?,
 	val details: String,
 	val user: User,
 	val task: Task
 )
 
 data class TaskExecutionRequest(
-	val startedAt: Date,
-	val finishedAt: Date,
-	val details: String,
-	val user: Long,
-	val task: Long
+	val details: String
 )
 
-fun TaskExecutionRequest.toCommand(user: User, task: Task) = TaskExecutionCommand(
+fun TaskExecutionRequest.toCommand(startedAt: Date, finishedAt: Date?, user: User, task: Task) = TaskExecutionCommand(
 	startedAt = startedAt,
 	finishedAt = finishedAt,
 	details = details,

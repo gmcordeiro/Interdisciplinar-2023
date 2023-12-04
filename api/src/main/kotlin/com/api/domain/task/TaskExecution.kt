@@ -9,7 +9,7 @@ class TaskExecution (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Long? = null,
 	val startedAt: Date,
-	val finishedAt: Date,
+	val finishedAt: Date?,
 	val details: String,
 	@ManyToOne
 	val user: User,

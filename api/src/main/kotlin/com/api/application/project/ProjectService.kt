@@ -30,12 +30,13 @@ class ProjectService(
 		return projectRepository.findById(projectId).get()
 	}
 	fun insert(projectRequest: ProjectRequest): Project? {
-		val projectCommand = getCommand(projectRequest, true, 0)  ?: throw ProjectNotFoundException(0)
+		val projectCommand = getCommand(projectRequest, true)  ?: throw ProjectNotFoundException(0)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
 	fun update(projectRequest: ProjectRequest, projectId: Long): Project?{
-		val projectCommand = getCommand(projectRequest, false, projectId) ?: throw ProjectNotFoundException(projectId)
+		val projectOld = projectRepository.findById(projectId).get() ?: throw ProjectNotFoundException(projectId)
+		val projectCommand = getCommand(projectRequest, false)
 		val projectDomain = projectRepository.save(projectCommand.toProject())
 		return projectDomain.id?.let { findById(it) }
 	}
@@ -49,7 +50,7 @@ class ProjectService(
 		projectRepository.save(project)
 		return true
 	}
-	fun getCommand(projectRequest: ProjectRequest, create: Boolean, projectId: Long): ProjectCommand? {
+	fun getCommand(projectRequest: ProjectRequest, create: Boolean): ProjectCommand {
 		val owner = userRepository.findById(projectRequest.owner).get()
 		val projectType = projectTypeRepository.findById(projectRequest.type).get()
 

@@ -5,7 +5,10 @@ import com.api.application.user.UserService
 import com.api.application.user.exceptions.UserNotFoundException
 import com.api.domain.task.TaskExecution
 import com.api.domain.task.TeskExecutionRepository
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Repository
+import java.time.Instant
+import java.util.*
 
 @Repository
 class TaskExecutionService(
@@ -20,25 +23,21 @@ class TaskExecutionService(
 		return taskExecutionRepository.findAllByTaskId(taskId)
 	}
 
-	fun insert (execution: TaskExecutionRequest): TaskExecution? {
-		val executionCommand = (getCommand(execution))
+	fun insert (taskId: Long, execution: TaskExecutionRequest, userDetails: UserDetails): TaskExecution? {
+		val startedAt = Date.from(Instant.now())
+		val finishedAt = null
+		val executionCommand = (getCommand(startedAt, finishedAt, execution, userDetails.username, taskId))
 		val executionDomain = executionCommand.toTaskExecution()
 		taskExecutionRepository.save(executionDomain)
 		return executionDomain.id?.let { findById(it) }
 	}
 
-	fun update (execution: TaskExecutionRequest, executionId: Long): TaskExecution?{
-		val executionCommand = (getCommand(execution))
-		val executionDomain = executionCommand.toTaskExecution(executionId)
-		taskExecutionRepository.save(executionDomain)
-		return executionDomain.id?.let { findById(it) }
-	}
 
-	fun getCommand (execution: TaskExecutionRequest): TaskExecutionCommand{
-		val user = userService.findByID(execution.user) ?: throw UserNotFoundException(userID = execution.user)
-		val userDomain = userService.findByEmail(user.email) ?: throw UserNotFoundException(userID = execution.user)
 
-		val task = taskService.findById(execution.task) ?: throw TaskNotFoundException(taskID = execution.task)
-		return execution.toCommand(user = userDomain,task = task)
+
+	fun getCommand(startedAt: Date, finishedAt: Date?, execution: TaskExecutionRequest, userEmail: String, taskId: Long): TaskExecutionCommand {
+		val user = userService.findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
+		val task = taskService.findById(taskId) ?: throw TaskNotFoundException(taskId)
+		return execution.toCommand(startedAt, finishedAt, user, task)
 	}
 }
