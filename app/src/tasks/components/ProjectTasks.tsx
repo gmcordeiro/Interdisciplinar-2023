@@ -13,26 +13,23 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useToast,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
-import { PropsWithChildren, useContext, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { PropsWithChildren, useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
+import { useNavigate, useParams } from "react-router-dom";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
-import { Project, Task } from "../types";
+import { createTask, getTasks } from "../services";
+import { Task } from "../types";
 import TaskExecutions from "./TaskExecutions";
-import TasksForm from "./TasksForm";
+import TasksForm, { TasksFormValues } from "./TasksForm";
 import TasksGrid from "./TasksGrid";
 
-type ProjectTasksProps = PropsWithChildren<{
-  project: Project;
-}>;
+type ProjectTasksProps = PropsWithChildren;
 
-const ProjectTasks: React.FC<ProjectTasksProps> = ({ project, children }) => {
+const ProjectTasks: React.FC<ProjectTasksProps> = ({ children }) => {
   const navigate = useNavigate();
-
-  const { getTasks } = useContext(FakeStorageContext);
 
   const [scope, setScope] = useState<FormScope>(FormScope.INDEX);
 
@@ -40,15 +37,38 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ project, children }) => {
 
   const [tab, setTab] = useState<"details" | "executions">("details");
 
+  const toast = useToast();
+
+  const { id } = useParams();
+
   const {
     data: tasks,
     isLoading: fetching,
     refetch,
   } = useQuery({
-    queryKey: ["project-tasks", { id: project.id }],
-    queryFn: () => getTasks(project.id),
+    queryKey: ["project-tasks", { id }],
+    queryFn: () => getTasks(parseInt(id as string)),
+    enabled: !!id,
     initialData: [],
-    enabled: !!project.id,
+  });
+
+  const { mutateAsync: create } = useMutation({
+    mutationFn: (values: TasksFormValues) =>
+      createTask(parseInt(id as string), values),
+    onSuccess: () => {
+      toast({
+        title: "Task created",
+        status: "success",
+      });
+
+      setScope(FormScope.INDEX);
+    },
+    onError: () => {
+      toast({
+        title: "Task creation failed",
+        status: "error",
+      });
+    },
   });
 
   return (
@@ -68,13 +88,17 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ project, children }) => {
           <ModalBody>
             {scope === FormScope.CREATE && (
               <TasksForm
-                onSubmit={() => {
-                  setScope(FormScope.INDEX);
-                }}
+                onSubmit={create}
                 onBack={() => {
                   setScope(FormScope.INDEX);
                 }}
                 scope={scope}
+                defaultValues={{
+                  description: "",
+                  name: "",
+                  done: false,
+                  dependsOn: null,
+                }}
               />
             )}
             {scope === FormScope.EDIT && task && (
@@ -87,7 +111,12 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ project, children }) => {
                     setScope(FormScope.INDEX);
                   }}
                   scope={scope}
-                  defaultValues={task as Task}
+                  defaultValues={
+                    {
+                      ...task,
+                      dependsOn: task?.dependsOn?.id,
+                    } as TasksFormValues
+                  }
                 />
               </TaskExecutions>
             )}
@@ -103,7 +132,7 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ project, children }) => {
           <TabPanel p={0}>{children}</TabPanel>
           <TabPanel>
             <TasksGrid
-              tasks={tasks}
+              tasks={tasks || []}
               fetching={fetching}
               onEdit={(_task, tab) => {
                 setTab(tab || "details");

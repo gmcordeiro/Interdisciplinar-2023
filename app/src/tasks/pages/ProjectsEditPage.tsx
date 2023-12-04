@@ -5,15 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
 import PageContainer from "../../common/components/PageContainer";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
 import ProjectTasks from "../components/ProjectTasks";
 import ProjectsForm from "../components/ProjectsForm";
+import { getProject } from "../services";
 import { ProjectFormValues } from "../types";
 
 const ProjectsEditPage = () => {
-  const { getProject } = useContext(FakeStorageContext);
-
   const { user } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -26,8 +24,7 @@ const ProjectsEditPage = () => {
 
   const { data: project, isFetching: fetching } = useQuery({
     queryKey: ["project", { id }],
-    queryFn: () => getProject(id as string),
-    initialData: null,
+    queryFn: () => getProject(parseInt(id as string)),
     enabled: !!id,
   });
 
@@ -65,7 +62,7 @@ const ProjectsEditPage = () => {
     >
       {fetching && <Progress size="xs" isIndeterminate />}
       {project && (
-        <ProjectTasks project={project}>
+        <ProjectTasks>
           <ProjectsForm
             scope={
               user?.role === UserRole.COLLABORATOR
