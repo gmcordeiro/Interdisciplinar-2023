@@ -27,7 +27,7 @@ class TaskController(
 		return taskHandler.findByProjectIdAndId(projectId, taskId)
 	}
 
-	@PostMapping("/project/{projectId}/tasks")
+	@PostMapping("/projects/{projectId}/tasks")
 	fun insert(@RequestBody task: TaskRequest, @PathVariable projectId: Long): ResponseEntity<Task>{
 		return taskHandler.insert(task, projectId)
 	}

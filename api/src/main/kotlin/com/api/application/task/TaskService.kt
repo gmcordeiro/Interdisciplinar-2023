@@ -29,7 +29,7 @@ class TaskService(
 	}
 
 	fun insert(task: TaskRequest, projectId: Long): Task? {
-		val taskCommand = getCommand(task, true, 0, projectId)
+		val taskCommand = getCommand(task, true, null, projectId)
 		val taskDomain = taskRepository.save(taskCommand.toTask())
 		return taskDomain.id?.let { findById(it) }
 	}
@@ -46,7 +46,7 @@ class TaskService(
 	}
 
 	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long?, projectId: Long): TaskCommand {
-		val dependsOndTask = if(taskId != null) taskRepository.findById(taskId).get() else null
+		val dependsOndTask = task.dependsOn?.let { taskRepository.findById(it).get() }
 		val projectDomain = projectRepository.findById(projectId).get()
 		val execution = if(create) listOf() else if(taskId != null) taskExecutionRepository.findAllByTaskId(taskId) else listOf()
 

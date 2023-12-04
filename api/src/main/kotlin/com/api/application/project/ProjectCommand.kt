@@ -11,7 +11,6 @@ data class ProjectCommand(
 	val goal: String,
 	val resources: String,
 	val done: Boolean,
-	val tasks: List<Task>,
 	val type: ProjectType,
 	val owner: User
 )
@@ -32,7 +31,6 @@ fun ProjectRequest.toCommand(tasks: List<Task>, type: ProjectType, owner: User) 
 	goal = goal,
 	resources = resources,
 	done = done,
-	tasks = tasks,
 	type = type,
 	owner = owner
 )
@@ -43,7 +41,6 @@ fun ProjectCommand.toProject() = Project(
 	goal = goal,
 	resources = resources,
 	done = done,
-	tasks = tasks,
 	type = type,
 	owner = owner
 )

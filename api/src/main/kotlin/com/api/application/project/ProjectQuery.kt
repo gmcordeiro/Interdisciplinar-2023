@@ -11,7 +11,6 @@ data class ProjectQuery(
 	val goal: String,
 	val resources: String,
 	val done: Boolean,
-	val tasks: List<Task>,
 	val type: ProjectType,
 	val owner: UserQuery
 )

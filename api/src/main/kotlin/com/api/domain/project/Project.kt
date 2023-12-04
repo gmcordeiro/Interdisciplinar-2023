@@ -21,8 +21,6 @@ class Project (
 	val goal: String,
 	val resources: String,
 	var done: Boolean,
-	@OneToMany(mappedBy = "project", cascade = [CascadeType.REMOVE])
-	val tasks: List<Task>,
 	@ManyToOne
 	val type: ProjectType,
 	@ManyToOne
@@ -36,7 +34,6 @@ fun Project.toProjectQuery(listTasks: Boolean) = ProjectQuery(
 	goal = goal,
 	resources = resources,
 	done = done,
-	tasks = if(listTasks) tasks else listOf(),
 	type = type,
 	owner = owner.toUserQuery()
 )
