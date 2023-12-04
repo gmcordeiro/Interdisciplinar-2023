@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class UserController(
-    private val userHandler: UserHandler,
-    private val encoderPassword: EncoderPassword
+    private val userHandler: UserHandler
 ) {
     @GetMapping("/users")
     fun findAll(): ResponseEntity<List<UserQuery>>{
@@ -23,13 +22,11 @@ class UserController(
 
     @PostMapping("/users")
     fun insert(@RequestBody user: UserRequest): ResponseEntity<UserQuery>{
-        user.password = encoderPassword.encode(user.password)
         return userHandler.insert(user)
     }
 
     @PutMapping("/users/{userID}")
     fun update(@RequestBody user: UserRequest, @PathVariable userID: Long): ResponseEntity<UserQuery>{
-        user.password = encoderPassword.encode(user.password)
         return userHandler.update(user, userID)
     }
 

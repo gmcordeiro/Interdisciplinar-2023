@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service
 @Service
 class UserService (
     private val userRepository: UserRepository,
-    private val userCategoryRepository: UserCategoryRepository
+    private val userCategoryRepository: UserCategoryRepository,
+    private val encoderPassword: EncoderPassword
 ) {
     fun findAll(): List<UserQuery> {
         val listUserQuery: ArrayList<UserQuery> = arrayListOf()
@@ -21,16 +22,17 @@ class UserService (
     }
 
     fun findByEmail(userEmail: String): User? {
-        return userRepository.findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
+        return userRepository.findByEmail(userEmail)
     }
 
     fun findByID(userID: Long): UserQuery? {
         val user = userRepository.findById(userID).get()
-        return user.toUserQuery() ?: throw UserNotFoundException(userID = userID)
+        return user.toUserQuery()
     }
 
 
     fun insert (user: UserRequest): UserQuery? {
+        user.password = encoderPassword.encode(user.password)
         val userCommand = getCommand(user)
         val userDomain = userCommand.toUser()
         userRepository.save(userDomain)
@@ -39,10 +41,11 @@ class UserService (
     }
 
     fun update (user: UserRequest, userID: Long): UserQuery? {
-        val userOld = findByID(userID) ?: throw UserNotFoundException(userID = userID)
+        val userOld = userRepository.findById(userID).get()
         if(user.password.isEmpty()){
-            val userDomain = findByEmail(userOld.email) ?: throw UserNotFoundException(userID = userID)
-            user.password = userDomain.password
+            user.password = userOld.password
+        }else{
+            user.password = encoderPassword.encode(user.password)
         }
         val userCommand = getCommand(user)
         val userDomain = userCommand.toUser(userOld.id)
