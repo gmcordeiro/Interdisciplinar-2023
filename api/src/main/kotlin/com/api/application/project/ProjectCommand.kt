@@ -25,7 +25,7 @@ data class ProjectRequest(
 	val owner: Long
 )
 
-fun ProjectRequest.toCommand(tasks: List<Task>, type: ProjectType, owner: User) = ProjectCommand(
+fun ProjectRequest.toCommand(type: ProjectType, owner: User) = ProjectCommand(
 	name = name,
 	description = description,
 	goal = goal,

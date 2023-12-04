@@ -50,13 +50,9 @@ class ProjectService(
 		return true
 	}
 	fun getCommand(projectRequest: ProjectRequest, create: Boolean, projectId: Long): ProjectCommand? {
-
-		val projectDomain = if(create) null else projectRepository.findById(projectId).get()
-
 		val owner = userRepository.findById(projectRequest.owner).get()
 		val projectType = projectTypeRepository.findById(projectRequest.type).get()
-		val tasks = if(create) listOf() else projectDomain?.let { taskRepository.findAllByProject(it) }
 
-		return tasks?.let { projectRequest.toCommand(it, projectType, owner) }
+		return projectRequest.toCommand(projectType, owner)
 	}
 }
