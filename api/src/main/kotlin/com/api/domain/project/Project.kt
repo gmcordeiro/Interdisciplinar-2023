@@ -16,13 +16,13 @@ import jakarta.persistence.OneToMany
 class Project (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Long? = null,
-	val name: String,
-	val description: String,
-	val goal: String,
-	val resources: String,
+	var name: String,
+	var description: String,
+	var goal: String,
+	var resources: String,
 	var done: Boolean,
 	@ManyToOne
-	val type: ProjectType,
+	var type: ProjectType,
 	@ManyToOne
 	val owner: User
 )

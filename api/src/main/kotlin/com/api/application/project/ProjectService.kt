@@ -7,7 +7,6 @@ import com.api.domain.project.ProjectTypeRepository
 import com.api.domain.project.toProjectQuery
 import com.api.domain.task.TaskRepository
 import com.api.domain.user.UserRepository
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -37,7 +36,13 @@ class ProjectService(
 	fun update(projectRequest: ProjectRequest, projectId: Long): Project?{
 		val projectOld = projectRepository.findById(projectId).get() ?: throw ProjectNotFoundException(projectId)
 		val projectCommand = getCommand(projectRequest, false)
-		val projectDomain = projectRepository.save(projectCommand.toProject())
+		val newProject = projectCommand.toProject()
+		projectOld.type = newProject.type
+		projectOld.description = newProject.description
+		projectOld.goal = newProject.goal
+		projectOld.name = newProject.name
+		projectOld.resources = newProject.resources
+		val projectDomain = projectRepository.save(projectOld)
 		return projectDomain.id?.let { findById(it) }
 	}
 	fun delete (projectId: Long): Boolean{
