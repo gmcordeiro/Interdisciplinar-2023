@@ -29,15 +29,15 @@ class TaskService(
 	}
 
 	fun insert(task: TaskRequest, projectId: Long): Task? {
-		val taskCommand = getCommand(task, true, null, projectId)
+		val taskCommand = getCommand(task, true, projectId)
 		val taskDomain = taskRepository.save(taskCommand.toTask())
 		return taskDomain.id?.let { findById(it) }
 	}
 
 	fun update(task: TaskRequest, taskId: Long, projectId: Long): Task? {
-		val taskCommand = getCommand(task, false, taskId, projectId)
-		val taskDomain = taskRepository.save(taskCommand.toTask(taskId))
-		return taskDomain.id?.let { findById(it) }
+		val taskCommand = getCommand(task, false, projectId)
+		val taskDomain = task.dependsOn?.let { taskCommand.toTask(it) }?.let { taskRepository.save(it) }
+		return taskDomain?.id?.let { findById(it) }
 	}
 
 	fun delete(taskId: Long): Boolean{
@@ -45,12 +45,11 @@ class TaskService(
 		return !taskRepository.existsById(taskId)
 	}
 
-	fun getCommand(task: TaskRequest, create: Boolean, taskId: Long?, projectId: Long): TaskCommand {
+	fun getCommand(task: TaskRequest, create: Boolean, projectId: Long): TaskCommand {
 		val dependsOndTask = task.dependsOn?.let { taskRepository.findById(it).get() }
 		val projectDomain = projectRepository.findById(projectId).get()
-		val execution = if(create) listOf() else if(taskId != null) taskExecutionRepository.findAllByTaskId(taskId) else listOf()
 
-		return task.toCommand(projectDomain, dependsOndTask, execution)
+		return task.toCommand(projectDomain, dependsOndTask)
 	}
 
 	fun done(taskId: Long): Boolean? {

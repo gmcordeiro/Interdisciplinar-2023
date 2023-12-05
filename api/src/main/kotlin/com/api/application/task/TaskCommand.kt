@@ -11,8 +11,8 @@ data class TaskCommand (
 	val description: String,
 	val done: Boolean,
 	val project: Project,
-	val dependsOn: Task?,
-	val executions: List<TaskExecution>?
+	val dependsOn: Task?
+//	val executions: List<TaskExecution>?
 )
 
 data class TaskRequest(
@@ -22,13 +22,12 @@ data class TaskRequest(
 	val dependsOn: Long? = null
 )
 
-fun TaskRequest.toCommand(project: Project, dependsOndTask: Task?, executions: List<TaskExecution>) = TaskCommand(
+fun TaskRequest.toCommand(project: Project, dependsOndTask: Task?) = TaskCommand(
 	name = name,
 	description = description,
 	done = done,
 	project = project,
-	dependsOn = dependsOndTask,
-	executions = executions
+	dependsOn = dependsOndTask
 )
 
 fun TaskCommand.toTask() = Task (
@@ -36,8 +35,7 @@ fun TaskCommand.toTask() = Task (
 	description = description,
 	done = done,
 	project = project,
-	dependsOn = dependsOn,
-	executions = executions
+	dependsOn = dependsOn
 )
 
 fun TaskCommand.toTask(taskId: Long) = Task (
@@ -46,6 +44,5 @@ fun TaskCommand.toTask(taskId: Long) = Task (
 	description = description,
 	done = done,
 	project = project,
-	dependsOn = dependsOn,
-	executions = executions
+	dependsOn = dependsOn
 )

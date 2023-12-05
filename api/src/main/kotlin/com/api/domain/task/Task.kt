@@ -19,7 +19,7 @@ class Task (
 	@ManyToOne
 	val project: Project,
 	@ManyToOne
-	val dependsOn: Task? = null,
-	@OneToMany(mappedBy = "task", cascade = [CascadeType.REMOVE])
-	val executions: List<TaskExecution>?
+	val dependsOn: Task? = null//,
+//	@OneToMany(mappedBy = "task", cascade = [CascadeType.REMOVE])
+//	val executions: List<TaskExecution>?
 )
