@@ -27,7 +27,7 @@ import { FiClock, FiSettings, FiTrash } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
-import { clockInTask, clockOutTask, removeTask } from "../services";
+import { clockInTask, clockOutTask, finishTask, removeTask } from "../services";
 import { Task, TaskExecution } from "../types";
 import PunchClock, { PunchType } from "./PunchClock";
 
@@ -51,6 +51,8 @@ const TasksGrid: React.FC<TasksGridProps> = ({
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const [taskForDeletion, setTaskForDeletion] = useState<Task | null>(null);
+
+  const [taskForFinish, setTaskForFinish] = useState<Task | null>(null);
 
   const toast = useToast();
 
@@ -127,6 +129,25 @@ const TasksGrid: React.FC<TasksGridProps> = ({
     },
   });
 
+  const { mutateAsync: finish, isPending: finishing } = useMutation({
+    mutationFn: (taskId: number) =>
+      finishTask(parseInt(projectId as string), taskId),
+    onSuccess: () => {
+      toast({
+        title: "Task finished",
+        status: "success",
+      });
+
+      onRefetch();
+    },
+    onError: () => {
+      toast({
+        title: "Task finish failed",
+        status: "error",
+      });
+    },
+  });
+
   const popoverWidth = useBreakpointValue({ md: "440" });
 
   return (
@@ -170,6 +191,11 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                       aria-label={"mark as done"}
                       size="sm"
                       colorScheme="green"
+                      isLoading={finishing && taskForFinish?.id === task.id}
+                      onClick={() => {
+                        finish(task.id);
+                        setTaskForFinish(task);
+                      }}
                     />
                   )}
                   <IconButton
