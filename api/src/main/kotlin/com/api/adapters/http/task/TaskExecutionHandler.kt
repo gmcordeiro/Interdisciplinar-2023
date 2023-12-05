@@ -5,6 +5,7 @@ import com.api.application.task.TaskExecutionService
 import com.api.domain.task.Task
 import com.api.domain.task.TaskExecution
 import com.api.domain.user.User
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
@@ -28,11 +29,12 @@ class TaskExecutionHandler(
 
 	fun insert(taskId: Long, execution: TaskExecutionRequest, userDetails: UserDetails): ResponseEntity<TaskExecution> {
 		val executionDomain = taskExecutionService.insert(taskId, execution, userDetails)
-		return ResponseEntity.ok(executionDomain)
+		return ResponseEntity.status(HttpStatus.CREATED).body(executionDomain)
 	}
 
 	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest, userDetails: UserDetails): ResponseEntity<TaskExecution> {
-		TODO("Don't yet implemented")
+		val executionDomain = taskExecutionService.done(taskID, executionID, execution, userDetails)
+		return ResponseEntity.status(HttpStatus.OK).body(executionDomain)
 	}
 
 }

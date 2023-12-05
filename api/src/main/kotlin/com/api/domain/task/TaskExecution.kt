@@ -9,8 +9,8 @@ class TaskExecution (
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	val id: Long? = null,
 	val startedAt: Date,
-	val finishedAt: Date?,
-	val details: String,
+	var finishedAt: Date?,
+	var details: String,
 	@ManyToOne
 	val user: User,
 	@ManyToOne

@@ -32,12 +32,17 @@ class TaskExecutionService(
 		return executionDomain.id?.let { findById(it) }
 	}
 
-
-
+	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest, userDetails: UserDetails): TaskExecution? {
+		val executionDomain = findById(executionID) ?: throw TaskNotFoundException(executionID)
+		executionDomain.finishedAt = Date.from(Instant.now())
+		executionDomain.details = execution.details
+		return taskExecutionRepository.save(executionDomain)
+	}
 
 	fun getCommand(startedAt: Date, finishedAt: Date?, execution: TaskExecutionRequest, userEmail: String, taskId: Long): TaskExecutionCommand {
 		val user = userService.findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
 		val task = taskService.findById(taskId) ?: throw TaskNotFoundException(taskId)
 		return execution.toCommand(startedAt, finishedAt, user, task)
 	}
+
 }
