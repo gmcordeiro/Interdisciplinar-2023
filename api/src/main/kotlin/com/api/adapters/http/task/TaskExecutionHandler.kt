@@ -27,13 +27,13 @@ class TaskExecutionHandler(
 		return ResponseEntity.ok(execution)
 	}
 
-	fun insert(taskId: Long, execution: TaskExecutionRequest, userDetails: UserDetails): ResponseEntity<TaskExecution> {
-		val executionDomain = taskExecutionService.insert(taskId, execution, userDetails)
+	fun insert(taskId: Long, execution: TaskExecutionRequest): ResponseEntity<TaskExecution> {
+		val executionDomain = taskExecutionService.insert(taskId, execution)
 		return ResponseEntity.status(HttpStatus.CREATED).body(executionDomain)
 	}
 
-	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest, userDetails: UserDetails): ResponseEntity<TaskExecution> {
-		val executionDomain = taskExecutionService.done(taskID, executionID, execution, userDetails)
+	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest): ResponseEntity<TaskExecution> {
+		val executionDomain = taskExecutionService.done(taskID, executionID, execution)
 		return ResponseEntity.status(HttpStatus.OK).body(executionDomain)
 	}
 

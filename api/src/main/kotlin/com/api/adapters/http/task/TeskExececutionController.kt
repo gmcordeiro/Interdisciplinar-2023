@@ -1,7 +1,9 @@
 package com.api.adapters.http.task
 
+import com.api.adapters.http.security.JWTUtil
 import com.api.application.task.TaskExecutionRequest
 import com.api.domain.task.TaskExecution
+import io.jsonwebtoken.Jwts
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
@@ -27,12 +29,12 @@ class TeskExececutionController(
 	}
 
 	@PostMapping("/tasks/{taskID}/executions")
-	fun insert(@PathVariable taskID: Long, @RequestBody execution: TaskExecutionRequest, @AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<TaskExecution> {
-		return taskExecutionHandler.insert(taskID, execution, userDetails)
+	fun insert(@PathVariable taskID: Long, @RequestBody execution: TaskExecutionRequest): ResponseEntity<TaskExecution> {
+		return taskExecutionHandler.insert(taskID, execution)
 	}
 
 	@PutMapping("/tasks/{taskID}/executions/{executionID}/finish")
-	fun finish(@PathVariable taskID: Long, @PathVariable executionID: Long, @RequestBody execution: TaskExecutionRequest, @AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<TaskExecution> {
-		return  taskExecutionHandler.done(taskID, executionID, execution, userDetails)
+	fun finish(@PathVariable taskID: Long, @PathVariable executionID: Long, @RequestBody execution: TaskExecutionRequest): ResponseEntity<TaskExecution> {
+		return  taskExecutionHandler.done(taskID, executionID, execution)
 	}
 }

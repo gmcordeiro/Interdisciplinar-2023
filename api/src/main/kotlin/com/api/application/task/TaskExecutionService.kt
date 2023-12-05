@@ -23,24 +23,25 @@ class TaskExecutionService(
 		return taskExecutionRepository.findAllByTaskId(taskId)
 	}
 
-	fun insert (taskId: Long, execution: TaskExecutionRequest, userDetails: UserDetails): TaskExecution? {
+	fun insert (taskId: Long, execution: TaskExecutionRequest): TaskExecution? {
 		val startedAt = Date.from(Instant.now())
 		val finishedAt = null
-		val executionCommand = (getCommand(startedAt, finishedAt, execution, userDetails.username, taskId))
+		val executionCommand = (getCommand(startedAt, finishedAt, execution, taskId))
 		val executionDomain = executionCommand.toTaskExecution()
 		taskExecutionRepository.save(executionDomain)
 		return executionDomain.id?.let { findById(it) }
 	}
 
-	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest, userDetails: UserDetails): TaskExecution? {
+	fun done(taskID: Long, executionID: Long, execution: TaskExecutionRequest): TaskExecution? {
 		val executionDomain = findById(executionID) ?: throw TaskNotFoundException(executionID)
 		executionDomain.finishedAt = Date.from(Instant.now())
 		executionDomain.details = execution.details
 		return taskExecutionRepository.save(executionDomain)
 	}
 
-	fun getCommand(startedAt: Date, finishedAt: Date?, execution: TaskExecutionRequest, userEmail: String, taskId: Long): TaskExecutionCommand {
-		val user = userService.findByEmail(userEmail) ?: throw UserNotFoundException(userEmail)
+	fun getCommand(startedAt: Date, finishedAt: Date?, execution: TaskExecutionRequest, taskId: Long): TaskExecutionCommand {
+		val userQuery = userService.findByID(execution.user) ?: throw UserNotFoundException(userID = execution.user)
+		val user = userService.findByEmail(userQuery.email) ?: throw UserNotFoundException(userEmail = userQuery.email)
 		val task = taskService.findById(taskId) ?: throw TaskNotFoundException(taskId)
 		return execution.toCommand(startedAt, finishedAt, user, task)
 	}

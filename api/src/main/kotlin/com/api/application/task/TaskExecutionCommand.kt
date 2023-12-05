@@ -14,7 +14,8 @@ data class TaskExecutionCommand (
 )
 
 data class TaskExecutionRequest(
-	val details: String
+	val details: String,
+	val user: Long
 )
 
 fun TaskExecutionRequest.toCommand(startedAt: Date, finishedAt: Date?, user: User, task: Task) = TaskExecutionCommand(
