@@ -58,7 +58,6 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
   const done = useWatch({
     control: form.control,
     name: "done",
-    defaultValue: false,
   });
 
   return (
