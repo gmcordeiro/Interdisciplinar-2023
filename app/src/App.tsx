@@ -13,7 +13,6 @@ import GuestGuard from "./auth/guards/GuestGuard";
 import RoleGuard from "./auth/guards/RoleGuard";
 import LoginPage from "./auth/pages/LoginPage";
 import { UserRole } from "./auth/types";
-import { FakeStorageProvider } from "./common/contexts/FakeStorageContext";
 import MenuLayout from "./common/layouts/MenuLayout";
 import SimpleLayout from "./common/layouts/SimpleLayout";
 import ProjectsCreatePage from "./tasks/pages/ProjectsCreatePage";
@@ -113,22 +112,19 @@ const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       retry: false,
-      staleTime: 0,
     },
   },
 });
 
 function App() {
   return (
-    <ChakraProvider>
-      <QueryClientProvider client={queryClient}>
-        <FakeStorageProvider>
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
-        </FakeStorageProvider>
-      </QueryClientProvider>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </ChakraProvider>
+    </QueryClientProvider>
   );
 }
 

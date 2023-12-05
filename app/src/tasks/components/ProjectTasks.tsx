@@ -15,7 +15,7 @@ import {
   Tabs,
   useToast,
 } from "@chakra-ui/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PropsWithChildren, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -41,6 +41,8 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ children }) => {
 
   const { id } = useParams();
 
+  const queryClient = useQueryClient();
+
   const {
     data: tasks,
     isLoading: fetching,
@@ -62,6 +64,8 @@ const ProjectTasks: React.FC<ProjectTasksProps> = ({ children }) => {
       });
 
       setScope(FormScope.INDEX);
+
+      queryClient.invalidateQueries({ queryKey: ["project-tasks", { id }] });
     },
     onError: () => {
       toast({

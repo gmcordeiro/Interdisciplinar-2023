@@ -101,7 +101,10 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({
           </FormLabel>
           <Select
             id="type"
-            {...form.register("type", { required: "Type is required" })}
+            {...form.register("type", {
+              required: "Type is required",
+              setValueAs: (value: string) => parseInt(value),
+            })}
           >
             {types.map((type: ProjectType) => (
               <option key={type.id} value={type.id.toString()}>

@@ -8,7 +8,7 @@ import PageContainer from "../../common/components/PageContainer";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
 import ProjectTasks from "../components/ProjectTasks";
 import ProjectsForm from "../components/ProjectsForm";
-import { getProject } from "../services";
+import { getProject, updateProject } from "../services";
 import { ProjectFormValues } from "../types";
 
 const ProjectsEditPage = () => {
@@ -29,7 +29,8 @@ const ProjectsEditPage = () => {
   });
 
   const { mutateAsync: update } = useMutation({
-    mutationFn: (values: ProjectFormValues) => Promise.resolve(values),
+    mutationFn: (values: ProjectFormValues) =>
+      updateProject(parseInt(id as string), values),
     onSuccess: () => {
       toast({
         title: "Update successful",
@@ -70,7 +71,13 @@ const ProjectsEditPage = () => {
                 : FormScope.EDIT
             }
             onSubmit={update}
-            defaultValues={project as unknown as ProjectFormValues}
+            defaultValues={
+              {
+                ...project,
+                owner: project?.owner?.id,
+                type: project?.type?.id,
+              } as unknown as ProjectFormValues
+            }
           />
         </ProjectTasks>
       )}

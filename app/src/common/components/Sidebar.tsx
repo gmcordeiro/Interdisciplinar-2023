@@ -28,9 +28,9 @@ interface LinkItemProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Usuários", icon: FiUser, href: "/users", roles: [UserRole.ADMIN] },
+  { name: "Users", icon: FiUser, href: "/users", roles: [UserRole.ADMIN] },
   {
-    name: "Projetos",
+    name: "Projects",
     icon: FaTasks,
     href: "/projects",
     roles: [UserRole.ADMIN, UserRole.COORDINATOR, UserRole.COLLABORATOR],
@@ -50,7 +50,7 @@ const Sidebar = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex h="20" alignItems="center" mx="4">
         <Text fontSize="xl" fontFamily="monospace" fontWeight="bold">
           Interdisciplinar
         </Text>

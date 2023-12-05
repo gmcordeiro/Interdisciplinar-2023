@@ -24,10 +24,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { FiClock, FiSettings, FiTrash } from "react-icons/fi";
+import { useParams } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
-import { Task } from "../types";
+import { clockInTask, clockOutTask, removeTask } from "../services";
+import { Task, TaskExecution } from "../types";
 import PunchClock, { PunchType } from "./PunchClock";
 
 type TasksGridProps = {
@@ -47,25 +48,36 @@ const TasksGrid: React.FC<TasksGridProps> = ({
 
   const queryClient = useQueryClient();
 
-  const { clockIn, clockOut } = useContext(FakeStorageContext);
-
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+
+  const [taskForDeletion, setTaskForDeletion] = useState<Task | null>(null);
 
   const toast = useToast();
 
+  const { id: projectId } = useParams();
+
   const { mutateAsync: punchClock, isPending: punching } = useMutation({
     mutationFn: async ({
+      execution,
+      task,
       type,
       details,
     }: {
+      task: Task;
       type: PunchType;
       details?: string;
+      execution?: TaskExecution;
     }) => {
       if (type === PunchType.CLOCK_IN) {
-        await clockIn("", details || "");
+        await clockInTask(user?.id as number, task.id, details || "");
       }
       if (type === PunchType.CLOCK_OUT) {
-        await clockOut("", details || "");
+        await clockOutTask(
+          user?.id as number,
+          task.id,
+          execution?.id as number,
+          details || ""
+        );
       }
     },
     onSuccess: () => {
@@ -93,6 +105,25 @@ const TasksGrid: React.FC<TasksGridProps> = ({
       });
 
       setSelectedTask(null);
+    },
+  });
+
+  const { mutateAsync: remove, isPending: removing } = useMutation({
+    mutationFn: (taskId: number) =>
+      removeTask(parseInt(projectId as string), taskId),
+    onSuccess: () => {
+      toast({
+        title: "Task deleted",
+        status: "success",
+      });
+
+      onRefetch();
+    },
+    onError: () => {
+      toast({
+        title: "Task deletion failed",
+        status: "error",
+      });
     },
   });
 
@@ -171,7 +202,9 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                             <PunchClock
                               task={task}
                               punching={punching}
-                              onPunch={punchClock}
+                              onPunch={({ type, details, execution }) =>
+                                punchClock({ type, details, task, execution })
+                              }
                               onCancel={() => {
                                 setSelectedTask(null);
                               }}
@@ -189,6 +222,11 @@ const TasksGrid: React.FC<TasksGridProps> = ({
                       aria-label={"delete"}
                       size="sm"
                       colorScheme="red"
+                      onClick={() => {
+                        remove(task.id);
+                        setTaskForDeletion(task);
+                      }}
+                      isLoading={removing && taskForDeletion?.id === task.id}
                     />
                   )}
                 </HStack>
