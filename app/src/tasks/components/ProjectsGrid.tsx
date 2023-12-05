@@ -11,6 +11,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
@@ -32,10 +33,22 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
 
   const { user } = useContext(AuthContext);
 
+  const toast = useToast();
+
   const { mutateAsync: remove, isPending: removing } = useMutation({
     mutationFn: removeProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      toast({
+        title: "Project removed",
+        status: "success",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error removing project",
+        status: "error",
+      });
     },
   });
 
@@ -43,6 +56,16 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
     mutationFn: finishProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      toast({
+        title: "Project finished",
+        status: "success",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error finishing project",
+        status: "error",
+      });
     },
   });
 
