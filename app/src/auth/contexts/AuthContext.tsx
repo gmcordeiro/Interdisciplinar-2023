@@ -1,19 +1,18 @@
+import { jwtDecode } from "jwt-decode";
 import {
   PropsWithChildren,
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
-import { User } from "../types";
+import { UserTokenPayload } from "../types";
 
 type AuthContextProps = {
-  user: User | null;
+  user: UserTokenPayload | null;
   authenticated: boolean;
-  authenticate: (user: User) => void;
+  authenticate: (token: string) => void;
   revoke: () => void;
   initialized: boolean;
 };
@@ -21,18 +20,26 @@ type AuthContextProps = {
 const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
 
 const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserTokenPayload | null>(null);
 
   const [initialized, setInitialized] = useState<boolean>(false);
 
-  const { me } = useContext(FakeStorageContext);
+  const authenticated = useMemo(() => !!user, [user]);
 
-  const authenticated = useMemo(() => !!user?.token, [user]);
+  const getUserFromToken = useCallback((token: string) => {
+    const user = jwtDecode<UserTokenPayload & { jti: number }>(token);
+    return { ...user, id: user.jti } as UserTokenPayload;
+  }, []);
 
-  const authenticate = useCallback((user: User) => {
-    localStorage.setItem("token", user.token as string);
-    setUser(user);
-    setInitialized(true);
+  const authenticate = useCallback((token: string) => {
+    try {
+      const user = getUserFromToken(token);
+      setUser(user);
+      setInitialized(true);
+      localStorage.setItem("token", token);
+    } catch (error) {
+      revoke();
+    }
   }, []);
 
   const revoke = useCallback(() => {
@@ -42,24 +49,14 @@ const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (initialized) {
-      return;
-    }
-
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || "";
 
     if (!token) {
       revoke();
       return;
     }
 
-    me(token)
-      .then(({ user }) => {
-        authenticate(user);
-      })
-      .catch(() => {
-        revoke();
-      });
+    authenticate(token);
   }, []);
 
   const value = useMemo(

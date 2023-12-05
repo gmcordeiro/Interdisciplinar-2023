@@ -10,41 +10,51 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
+import * as yup from "yup";
 import { AuthContext } from "../contexts/AuthContext";
+import { login } from "../services";
 import { LoginUserInput } from "../types";
 
 const LoginPage: React.FC = () => {
-  const { login } = useContext(FakeStorageContext);
-
   const { authenticate } = useContext(AuthContext);
+
+  const schema = yup.object().shape({
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup.string().required("Password is required"),
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginUserInput>();
+  } = useForm<LoginUserInput>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const toast = useToast();
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: ({ user }) => {
+    onSuccess: ({ accessToken }) => {
       toast({
-        title: "Login successful",
+        title: "User authenticated successfully",
         status: "success",
       });
 
-      authenticate(user);
+      authenticate(accessToken);
     },
     onError: () => {
       toast({
-        title: "Login failed",
+        title: "Authentication failed",
         status: "error",
       });
     },
@@ -60,7 +70,10 @@ const LoginPage: React.FC = () => {
       borderWidth="1px"
       borderRadius="lg"
     >
-      <form onSubmit={handleSubmit(mutateAsync)}>
+      <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" mb={6}>
+        Interdisciplinar
+      </Text>
+      <form onSubmit={handleSubmit((values) => mutateAsync(values))}>
         <Stack spacing={4}>
           <FormControl isInvalid={!!errors.email}>
             <FormLabel htmlFor="email">Email</FormLabel>
@@ -86,12 +99,7 @@ const LoginPage: React.FC = () => {
             </FormErrorMessage>
           </FormControl>
 
-          <VStack alignItems="flex-start" spacing={4}>
-            <Link to="/auth/register">
-              <Text fontSize="xs">
-                Don't have an account? <b>Register</b>
-              </Text>
-            </Link>
+          <VStack alignItems="flex-start" spacing={4} mt={2}>
             <Button
               w={"100%"}
               type="submit"

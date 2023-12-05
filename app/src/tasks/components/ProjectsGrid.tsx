@@ -7,20 +7,23 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useContext, useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import { FiSettings, FiTrash } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
-import { Project } from "../types";
+import { finishProject, removeProject } from "../services";
+import { FetchProjectsPayload } from "../types";
 
 type ProjectsGridProps = {
-  projects: Project[];
+  projects: FetchProjectsPayload[];
   fetching: boolean;
 };
 
@@ -30,13 +33,20 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
   const { user } = useContext(AuthContext);
 
   const { mutateAsync: remove, isPending: removing } = useMutation({
-    // mutationFn: removeUser,
+    mutationFn: removeProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 
-  const [deletedID, setDeletedID] = useState<string | null>(null);
+  const { mutateAsync: finish, isPending: finishing } = useMutation({
+    mutationFn: finishProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+
+  const [selected, setSelected] = useState<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -59,6 +69,13 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
               </Td>
             </Tr>
           )}
+          {projects.length === 0 && !fetching && (
+            <Tr>
+              <Td colSpan={4}>
+                <Text color={"gray.500"}>No projects found</Text>
+              </Td>
+            </Tr>
+          )}
           {projects.map((project) => (
             <Tr key={project.id}>
               <Td>{project.name}</Td>
@@ -72,6 +89,19 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
               </Td>
               <Td>
                 <HStack spacing={2} justifyContent="flex-end">
+                  {!project.done && (
+                    <IconButton
+                      icon={<FaCheckCircle />}
+                      aria-label={"mark as done"}
+                      size="sm"
+                      colorScheme="green"
+                      isLoading={finishing && selected === project.id}
+                      onClick={() => {
+                        setSelected(project.id);
+                        finish(project.id);
+                      }}
+                    />
+                  )}
                   <IconButton
                     icon={<FiSettings />}
                     aria-label={"edit"}
@@ -81,17 +111,17 @@ const ProjectsGrid: React.FC<ProjectsGridProps> = ({ projects, fetching }) => {
                     }}
                   />
                   {[UserRole.ADMIN, UserRole.COORDINATOR].includes(
-                    user?.category?.role as UserRole
+                    user?.role as UserRole
                   ) && (
                     <IconButton
                       icon={<FiTrash />}
                       aria-label={"delete"}
                       size="sm"
                       colorScheme="red"
-                      isLoading={removing && deletedID === project.id}
+                      isLoading={removing && selected === project.id}
                       onClick={() => {
-                        setDeletedID(project.id);
-                        remove();
+                        setSelected(project.id);
+                        remove(project.id);
                       }}
                     />
                   )}

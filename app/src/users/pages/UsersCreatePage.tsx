@@ -1,23 +1,20 @@
 import { useToast } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
 import UsersForm from "../components/UsersForm";
+import { registerUser } from "../services";
 
 const UsersCreatePage = () => {
   const navigate = useNavigate();
-
-  const { createUser } = useContext(FakeStorageContext);
 
   const queryClient = useQueryClient();
 
   const toast = useToast();
 
   const { mutateAsync: create } = useMutation({
-    mutationFn: createUser,
+    mutationFn: registerUser,
     onSuccess: () => {
       toast({
         title: "Create successful",

@@ -5,14 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext } from "../../auth/contexts/AuthContext";
 import { UserRole } from "../../auth/types";
 import PageContainer from "../../common/components/PageContainer";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
 import ProjectTasks from "../components/ProjectTasks";
-import ProjectsForm, { ProjectsFormValues } from "../components/ProjectsForm";
+import ProjectsForm from "../components/ProjectsForm";
+import { getProject, updateProject } from "../services";
+import { ProjectFormValues } from "../types";
 
 const ProjectsEditPage = () => {
-  const { getProject } = useContext(FakeStorageContext);
-
   const { user } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -25,13 +24,13 @@ const ProjectsEditPage = () => {
 
   const { data: project, isFetching: fetching } = useQuery({
     queryKey: ["project", { id }],
-    queryFn: () => getProject(id as string),
-    initialData: null,
+    queryFn: () => getProject(parseInt(id as string)),
     enabled: !!id,
   });
 
   const { mutateAsync: update } = useMutation({
-    mutationFn: (values: ProjectsFormValues) => Promise.resolve(values),
+    mutationFn: (values: ProjectFormValues) =>
+      updateProject(parseInt(id as string), values),
     onSuccess: () => {
       toast({
         title: "Update successful",
@@ -64,15 +63,21 @@ const ProjectsEditPage = () => {
     >
       {fetching && <Progress size="xs" isIndeterminate />}
       {project && (
-        <ProjectTasks project={project}>
+        <ProjectTasks>
           <ProjectsForm
             scope={
-              user?.category?.role === UserRole.COLLABORATOR
+              user?.role === UserRole.COLLABORATOR
                 ? FormScope.VIEW
                 : FormScope.EDIT
             }
             onSubmit={update}
-            defaultValues={project as ProjectsFormValues}
+            defaultValues={
+              {
+                ...project,
+                owner: project?.owner?.id,
+                type: project?.type?.id,
+              } as unknown as ProjectFormValues
+            }
           />
         </ProjectTasks>
       )}

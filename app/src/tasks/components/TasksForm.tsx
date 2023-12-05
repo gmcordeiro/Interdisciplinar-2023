@@ -7,18 +7,27 @@ import {
   FormErrorMessage,
   FormLabel,
   Input,
+  Select,
   Stack,
   Textarea,
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
 import { useForm, useWatch } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { FormScope, FormScopeLabel } from "../../common/types/form";
+import { getTasks } from "../services";
 import { Task } from "../types";
 
-export type TasksFormValues = Task;
+export type TasksFormValues = {
+  name: Task["name"];
+  description: Task["description"];
+  done: Task["done"];
+  dependsOn: number | null | undefined;
+};
 
 type TasksFormProps = {
   scope: FormScope;
-  defaultValues?: TasksFormValues;
+  defaultValues: TasksFormValues;
   onSubmit: (values: TasksFormValues) => void;
   onBack: () => void;
 };
@@ -36,6 +45,15 @@ const TasksForm: React.FC<TasksFormProps> = ({
   const done = useWatch({
     control: form.control,
     name: "done",
+  });
+
+  const { id } = useParams();
+
+  const { data: tasks } = useQuery({
+    queryKey: ["tasks", { id }],
+    queryFn: () => getTasks(parseInt(id as string)),
+    initialData: [],
+    enabled: !!id,
   });
 
   return (
@@ -79,6 +97,29 @@ const TasksForm: React.FC<TasksFormProps> = ({
           <FormErrorMessage>
             {form.formState.errors.description &&
               form.formState.errors.description.message}
+          </FormErrorMessage>
+        </FormControl>
+        <FormControl
+          isInvalid={!!form.formState.errors.dependsOn}
+          isReadOnly={scope === FormScope.VIEW}
+        >
+          <FormLabel htmlFor="dependsOn">Depends on</FormLabel>
+          <Select
+            id="dependsOn"
+            placeholder="Select a task"
+            {...form.register("dependsOn", {
+              setValueAs: (value) => (value ? parseInt(value) : null),
+            })}
+          >
+            {tasks.map((task) => (
+              <option key={task.id} value={task.id}>
+                {task.name}
+              </option>
+            ))}
+          </Select>
+          <FormErrorMessage>
+            {form.formState.errors.dependsOn &&
+              form.formState.errors.dependsOn.message}
           </FormErrorMessage>
         </FormControl>
         <Flex mt={5} justifyContent="flex-end" gap={3}>

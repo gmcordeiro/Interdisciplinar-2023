@@ -6,17 +6,15 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../common/components/PageContainer";
-import { FakeStorageContext } from "../../common/contexts/FakeStorageContext";
 import { FormScope } from "../../common/types/form";
-import UsersForm, { UserFormValues } from "../components/UsersForm";
+import UsersForm from "../components/UsersForm";
+import { getUser, updateUser } from "../services";
+import { UserFormValues } from "../types";
 
 const UsersEditPage = () => {
   const navigate = useNavigate();
-
-  const { getUser, updateUser } = useContext(FakeStorageContext);
 
   const { id } = useParams();
 
@@ -25,7 +23,8 @@ const UsersEditPage = () => {
   const toast = useToast();
 
   const { mutateAsync: update } = useMutation({
-    mutationFn: (values: UserFormValues) => updateUser(id as string, values),
+    mutationFn: (values: UserFormValues) =>
+      updateUser(parseInt(id as string), values),
     onSuccess: () => {
       toast({
         title: "Update successful",
@@ -46,7 +45,7 @@ const UsersEditPage = () => {
 
   const { data: user, isFetching } = useQuery({
     queryKey: ["user", { id }],
-    queryFn: () => getUser(id as string),
+    queryFn: () => getUser(parseInt(id as string)),
     initialData: null,
     enabled: !!id,
   });
